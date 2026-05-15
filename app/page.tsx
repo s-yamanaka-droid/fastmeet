@@ -21,7 +21,7 @@ export default async function Home() {
           </svg>
         </div>
 
-        <h1 style={{ fontSize: 26, fontWeight: 700, marginBottom: 8, color: "#1d1d1f" }}>CalBook</h1>
+        <h1 style={{ fontSize: 26, fontWeight: 700, marginBottom: 8, color: "#1d1d1f" }}>FASTMeet</h1>
         <p style={{ color: "#6e6e73", fontSize: 15, marginBottom: 32, lineHeight: 1.6 }}>
           Googleカレンダーと連携して<br />
           リアルタイムに空き日程を共有

@@ -19,7 +19,7 @@ type Booking = {
   guest_company: string | null
   start_time: string
   end_time: string
-  calbook_meeting_types: { name: string; color: string } | null
+  fastmeet_meeting_types: { name: string; color: string } | null
 }
 
 type Props = {
@@ -77,7 +77,7 @@ export default function DashboardClient({ username, initialMeetingTypes, initial
                 <line x1="16" y1="2" x2="16" y2="6" />
               </svg>
             </div>
-            <span style={{ fontWeight: 700, fontSize: 17, color: '#1d1d1f' }}>CalBook</span>
+            <span style={{ fontWeight: 700, fontSize: 17, color: '#1d1d1f' }}>FASTMeet</span>
           </div>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             {username && (
@@ -171,8 +171,8 @@ export default function DashboardClient({ username, initialMeetingTypes, initial
               display: 'flex', alignItems: 'center', gap: 14,
               boxShadow: '0 1px 4px rgba(0,0,0,0.06)'
             }}>
-              {b.calbook_meeting_types && (
-                <div style={{ width: 4, alignSelf: 'stretch', borderRadius: 2, background: b.calbook_meeting_types.color, flexShrink: 0 }} />
+              {b.fastmeet_meeting_types && (
+                <div style={{ width: 4, alignSelf: 'stretch', borderRadius: 2, background: b.fastmeet_meeting_types.color, flexShrink: 0 }} />
               )}
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: 600, fontSize: 15, color: '#1d1d1f' }}>

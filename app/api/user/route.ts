@@ -7,7 +7,7 @@ export async function GET() {
   if (!session?.user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { data } = await supabase
-    .from("calbook_users")
+    .from("fastmeet_users")
     .select("id, username, name, timezone")
     .eq("email", session.user.email)
     .single();

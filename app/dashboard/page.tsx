@@ -8,7 +8,7 @@ export default async function DashboardPage() {
   if (!session?.user?.email) redirect("/");
 
   const { data: user } = await supabase
-    .from("calbook_users")
+    .from("fastmeet_users")
     .select("id, username")
     .eq("email", session.user.email)
     .single();
@@ -18,13 +18,13 @@ export default async function DashboardPage() {
 
   const [{ data: meetingTypes }, { data: bookings }] = await Promise.all([
     userId
-      ? supabase.from("calbook_meeting_types").select("*").eq("user_id", userId).order("created_at")
+      ? supabase.from("fastmeet_meeting_types").select("*").eq("user_id", userId).order("created_at")
       : { data: [] },
     userId
       ? supabase
-          .from("calbook_bookings")
-          .select("*, calbook_meeting_types!inner(name, color, user_id)")
-          .eq("calbook_meeting_types.user_id", userId)
+          .from("fastmeet_bookings")
+          .select("*, fastmeet_meeting_types!inner(name, color, user_id)")
+          .eq("fastmeet_meeting_types.user_id", userId)
           .eq("status", "confirmed")
           .gte("start_time", new Date().toISOString())
           .order("start_time", { ascending: true })

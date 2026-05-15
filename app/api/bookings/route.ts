@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
   const end = new Date(endTime);
 
   const { data: existing } = await supabase
-    .from("calbook_bookings")
+    .from("fastmeet_bookings")
     .select("id")
     .eq("meeting_type_id", meetingTypeId)
     .eq("status", "confirmed")
@@ -26,15 +26,15 @@ export async function POST(req: NextRequest) {
   }
 
   const { data: meetingType } = await supabase
-    .from("calbook_meeting_types")
-    .select("name, description, calbook_users(google_refresh_token, email, name)")
+    .from("fastmeet_meeting_types")
+    .select("name, description, fastmeet_users(google_refresh_token, email, name)")
     .eq("id", meetingTypeId)
     .single();
 
   let googleEventId: string | null = null;
 
   if (meetingType) {
-    const host = (Array.isArray(meetingType.calbook_users) ? meetingType.calbook_users[0] : meetingType.calbook_users) as unknown as { google_refresh_token: string; email: string; name: string };
+    const host = (Array.isArray(meetingType.fastmeet_users) ? meetingType.fastmeet_users[0] : meetingType.fastmeet_users) as unknown as { google_refresh_token: string; email: string; name: string };
     if (host?.google_refresh_token) {
       try {
         const event = await createCalendarEvent(host.google_refresh_token, {
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
   }
 
   const { data: booking, error } = await supabase
-    .from("calbook_bookings")
+    .from("fastmeet_bookings")
     .insert({
       meeting_type_id: meetingTypeId,
       guest_name: guestName,
@@ -81,9 +81,9 @@ export async function GET(req: NextRequest) {
   if (!userId) return NextResponse.json({ error: "userId required" }, { status: 400 });
 
   const { data, error } = await supabase
-    .from("calbook_bookings")
-    .select("*, calbook_meeting_types(name, duration_minutes, color)")
-    .eq("calbook_meeting_types.user_id", userId)
+    .from("fastmeet_bookings")
+    .select("*, fastmeet_meeting_types(name, duration_minutes, color)")
+    .eq("fastmeet_meeting_types.user_id", userId)
     .eq("status", "confirmed")
     .gte("start_time", new Date().toISOString())
     .order("start_time", { ascending: true })

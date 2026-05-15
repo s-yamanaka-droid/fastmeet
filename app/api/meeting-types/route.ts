@@ -4,7 +4,7 @@ import { supabase } from "@/lib/supabase";
 
 async function getUserId(email: string) {
   const { data } = await supabase
-    .from("calbook_users")
+    .from("fastmeet_users")
     .select("id")
     .eq("email", email)
     .single();
@@ -19,7 +19,7 @@ export async function GET() {
   if (!userId) return NextResponse.json({ meetingTypes: [] });
 
   const { data, error } = await supabase
-    .from("calbook_meeting_types")
+    .from("fastmeet_meeting_types")
     .select("*")
     .eq("user_id", userId)
     .order("created_at");
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
     working_hours_start, working_hours_end, working_days } = body;
 
   const { data, error } = await supabase
-    .from("calbook_meeting_types")
+    .from("fastmeet_meeting_types")
     .insert({
       user_id: userId,
       name,
@@ -74,7 +74,7 @@ export async function DELETE(req: NextRequest) {
 
   const userId = await getUserId(session.user.email);
   const { error } = await supabase
-    .from("calbook_meeting_types")
+    .from("fastmeet_meeting_types")
     .delete()
     .eq("id", id)
     .eq("user_id", userId!);

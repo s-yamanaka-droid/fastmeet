@@ -43,13 +43,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (session.user?.email) {
         const username = session.user.email.split("@")[0].replace(/[^a-z0-9]/gi, "");
         const { data: existing } = await supabaseAdmin
-          .from("calbook_users")
+          .from("fastmeet_users")
           .select("id, username")
           .eq("email", session.user.email)
           .single();
 
         if (!existing) {
-          await supabaseAdmin.from("calbook_users").upsert({
+          await supabaseAdmin.from("fastmeet_users").upsert({
             email: session.user.email,
             name: session.user.name,
             username,
@@ -57,7 +57,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }, { onConflict: "email" });
         } else if (token.refreshToken) {
           await supabaseAdmin
-            .from("calbook_users")
+            .from("fastmeet_users")
             .update({ google_refresh_token: token.refreshToken as string })
             .eq("email", session.user.email);
         }

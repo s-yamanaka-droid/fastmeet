@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CalBook - スマート日程調整",
+  title: "FASTMeet - スマート日程調整",
   description: "Googleカレンダーと連携したリアルタイム日程調整ツール",
 };
 

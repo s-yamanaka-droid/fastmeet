@@ -10,8 +10,8 @@ export async function GET(req: NextRequest) {
   if (!typeId) return NextResponse.json({ error: "typeId required" }, { status: 400 });
 
   const { data: meetingType, error: typeError } = await supabase
-    .from("calbook_meeting_types")
-    .select("*, calbook_users(google_refresh_token, email)")
+    .from("fastmeet_meeting_types")
+    .select("*, fastmeet_users(google_refresh_token, email)")
     .eq("id", typeId)
     .single();
 
@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Meeting type not found" }, { status: 404 });
   }
 
-  const user = meetingType.calbook_users as { google_refresh_token: string; email: string };
+  const user = meetingType.fastmeet_users as { google_refresh_token: string; email: string };
   if (!user?.google_refresh_token) {
     return NextResponse.json({ error: "Calendar not connected" }, { status: 400 });
   }
@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
       () => []
     ),
     supabase
-      .from("calbook_bookings")
+      .from("fastmeet_bookings")
       .select("start_time, end_time")
       .eq("meeting_type_id", typeId)
       .eq("status", "confirmed")

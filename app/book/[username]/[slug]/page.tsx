@@ -26,7 +26,7 @@ export default function BookingPage({ params }: { params: Promise<{ username: st
     (async () => {
       // Look up user by username
       const { data: user } = await supabase
-        .from("calbook_users")
+        .from("fastmeet_users")
         .select("id")
         .eq("username", username)
         .single();
@@ -34,7 +34,7 @@ export default function BookingPage({ params }: { params: Promise<{ username: st
       if (!user) { setLoading(false); return; }
 
       const { data: mt } = await supabase
-        .from("calbook_meeting_types")
+        .from("fastmeet_meeting_types")
         .select("*")
         .eq("user_id", user.id)
         .eq("slug", slug)

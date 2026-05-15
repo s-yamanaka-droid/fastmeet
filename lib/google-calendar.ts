@@ -67,7 +67,7 @@ export async function createCalendarEvent(
       ],
       conferenceData: {
         createRequest: {
-          requestId: `calbook-${Date.now()}`,
+          requestId: `fastmeet-${Date.now()}`,
           conferenceSolutionKey: { type: "hangoutsMeet" },
         },
       },
