@@ -4,6 +4,7 @@ import { useEffect, useState, use } from "react";
 import { supabase } from "@/lib/supabase";
 import { formatSlotForCopy, TimeSlot } from "@/lib/availability";
 import type { MeetingType } from "@/lib/supabase";
+import PremiumHero from "./PremiumHero";
 
 type BookingStep = "slots" | "form" | "done";
 
@@ -22,17 +23,27 @@ export default function BookingPage({ params }: { params: Promise<{ username: st
   const [form, setForm] = useState({ name: "", email: "", company: "", notes: "" });
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [confirmed, setConfirmed] = useState<{ meetingUrl: string | null; cancelToken: string } | null>(null);
+  const [premium, setPremium] = useState<{ profile: Record<string, unknown>; metrics: Record<string, unknown> | null } | null>(null);
 
   useEffect(() => {
     (async () => {
       // Look up user by username
       const { data: user } = await supabase
         .from("fastmeet_users")
-        .select("id")
+        .select("id, is_premium, profile_data")
         .eq("username", username)
         .single();
 
       if (!user) { setLoading(false); return; }
+
+      if (user.is_premium) {
+        const { data: metrics } = await supabase
+          .from("fastmeet_metrics")
+          .select("*")
+          .eq("user_id", user.id)
+          .single();
+        setPremium({ profile: user.profile_data ?? {}, metrics: metrics ?? null });
+      }
 
       const { data: mt } = await supabase
         .from("fastmeet_meeting_types")
@@ -179,6 +190,9 @@ export default function BookingPage({ params }: { params: Promise<{ username: st
 
   return (
     <div style={{ minHeight: "100vh", background: "#f5f5f7" }}>
+      {/* Premium Hero (only for premium users, only during slot selection) */}
+      {premium && step === "slots" && <PremiumHero profile={premium.profile} metrics={premium.metrics} />}
+
       {/* Header */}
       <div style={{ background: "#fff", borderBottom: "1px solid #e0e0e5", padding: "16px 24px" }}>
         <div style={{ maxWidth: 800, margin: "0 auto" }}>
