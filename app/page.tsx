@@ -29,12 +29,16 @@ export default async function Home() {
 
         <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 28 }}>
           {[
-            { icon: "🔗", text: "URLを送るだけで先方が日程選択" },
-            { icon: "📋", text: "候補日テキストをワンクリックでコピー" },
-            { icon: "📅", text: "確定即Googleカレンダーに反映" },
+            { path: "M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71 M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71", text: "URLを送るだけで先方が日程選択" },
+            { path: "M9 9h13v13H9z M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1", text: "候補日テキストをワンクリックでコピー" },
+            { path: "M3 4h18v18H3z M3 10h18 M8 2v4 M16 2v4", text: "確定即Googleカレンダーに反映" },
           ].map((item) => (
-            <div key={item.text} style={{ display: "flex", alignItems: "center", gap: 10, textAlign: "left", fontSize: 14, color: "#3a3a3c" }}>
-              <span style={{ fontSize: 18 }}>{item.icon}</span>
+            <div key={item.text} style={{ display: "flex", alignItems: "center", gap: 12, textAlign: "left", fontSize: 14, color: "#3a3a3c" }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0066CC" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                {item.path.split(" M").map((d, i) => (
+                  <path key={i} d={i === 0 ? d : "M" + d} />
+                ))}
+              </svg>
               <span>{item.text}</span>
             </div>
           ))}
