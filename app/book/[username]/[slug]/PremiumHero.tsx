@@ -39,82 +39,92 @@ export default function PremiumHero({
 
   return (
     <section style={{
-      background: "linear-gradient(180deg, #0a0a0f 0%, #1a1a2e 100%)",
-      color: "#fff",
-      padding: "48px 24px 56px",
+      background: "linear-gradient(180deg, #f0f6ff 0%, #f5f5f7 100%)",
+      padding: "48px 24px 48px",
     }}>
       <div style={{ maxWidth: 800, margin: "0 auto" }}>
 
-        {/* Hero - Name + Titles */}
-        <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 28 }}>
+        {/* Name + Titles */}
+        <div style={{ display: "flex", alignItems: "center", gap: 18, marginBottom: 32 }}>
           <div style={{
-            width: 72, height: 72, borderRadius: 36,
-            background: "linear-gradient(135deg, #0066CC, #00a3ff)",
+            width: 64, height: 64, borderRadius: 32,
+            background: "linear-gradient(135deg, #0066CC 0%, #00b4d8 100%)",
             display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 26, fontWeight: 700, flexShrink: 0,
-            boxShadow: "0 4px 20px rgba(0,102,204,0.4)",
+            fontSize: 24, fontWeight: 700, flexShrink: 0,
+            color: "#fff",
+            boxShadow: "0 6px 20px rgba(0,102,204,0.25)",
           }}>
             {p.displayName?.slice(0, 1) ?? "Y"}
           </div>
           <div>
-            <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: "-0.01em" }}>
+            <div style={{ fontSize: 20, fontWeight: 700, color: "#1d1d1f", letterSpacing: "-0.01em" }}>
               {p.displayName ?? "Premium Host"}
             </div>
             {p.displayNameEn && (
-              <div style={{ fontSize: 12, color: "#8b8b9a", marginTop: 2, letterSpacing: "0.05em" }}>
+              <div style={{ fontSize: 12, color: "#86868b", marginTop: 2, letterSpacing: "0.05em" }}>
                 {p.displayNameEn}
               </div>
             )}
             {p.titles && p.titles.length > 0 && (
-              <div style={{ fontSize: 12, color: "#a0a0b0", marginTop: 6, lineHeight: 1.6 }}>
+              <div style={{ fontSize: 12, color: "#6e6e73", marginTop: 6, lineHeight: 1.6 }}>
                 {p.titles.join("  /  ")}
               </div>
             )}
           </div>
         </div>
 
-        {/* Tagline (Cの哲学型) */}
+        {/* Tagline */}
         {p.tagline && (
           <div style={{
-            fontSize: 28, fontWeight: 700, lineHeight: 1.4,
-            letterSpacing: "-0.02em",
-            marginBottom: 8,
-            background: "linear-gradient(90deg, #fff 0%, #c0d0ff 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
+            fontSize: 30, fontWeight: 700, lineHeight: 1.35,
+            letterSpacing: "-0.025em",
+            marginBottom: 10,
+            color: "#1d1d1f",
           }}>
             {p.tagline}
           </div>
         )}
 
-        {/* SubTagline (Bの数字殴り型) */}
+        {/* SubTagline */}
         {p.subTagline && (
           <div style={{
-            fontSize: 14, color: "#8b8b9a",
+            fontSize: 15, color: "#6e6e73",
             marginBottom: 32, lineHeight: 1.6,
           }}>
             {p.subTagline}
           </div>
         )}
 
-        {/* Metrics Grid */}
+        {/* Metrics Card */}
         {metrics && (
           <div style={{
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            borderRadius: 14, padding: "20px 24px",
+            background: "#fff",
+            borderRadius: 16, padding: "22px 24px",
             marginBottom: 28,
+            boxShadow: "0 2px 12px rgba(0,0,0,0.05), 0 0 0 1px rgba(0,0,0,0.03)",
           }}>
             <div style={{
-              fontSize: 11, color: "#6e6e80", marginBottom: 14,
-              letterSpacing: "0.1em", textTransform: "uppercase",
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+              marginBottom: 16,
             }}>
-              {monthLabel}の稼働実態
+              <div style={{
+                fontSize: 11, color: "#86868b",
+                letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 600,
+              }}>
+                {monthLabel}の稼働実態
+              </div>
+              <div style={{
+                fontSize: 10, color: "#0066CC", background: "#e8f0fe",
+                padding: "3px 10px", borderRadius: 20, fontWeight: 600,
+                letterSpacing: "0.05em",
+              }}>
+                LIVE
+              </div>
             </div>
+
             <div style={{
-              display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))",
-              gap: 16,
+              display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(100px, 1fr))",
+              gap: 18,
             }}>
               {[
                 { label: "総稼働", value: m.total_hours ? `${Math.round(m.total_hours)}h` : "-" },
@@ -125,22 +135,29 @@ export default function PremiumHero({
                 { label: "週末予定", value: m.weekend_count != null ? `${m.weekend_count}件` : "-" },
               ].map((stat) => (
                 <div key={stat.label}>
-                  <div style={{ fontSize: 22, fontWeight: 700, color: "#fff", letterSpacing: "-0.02em" }}>
+                  <div style={{
+                    fontSize: 22, fontWeight: 700, color: "#0066CC",
+                    letterSpacing: "-0.02em",
+                  }}>
                     {stat.value}
                   </div>
-                  <div style={{ fontSize: 11, color: "#8b8b9a", marginTop: 2 }}>
+                  <div style={{ fontSize: 11, color: "#86868b", marginTop: 3, fontWeight: 500 }}>
                     {stat.label}
                   </div>
                 </div>
               ))}
             </div>
+
             {m.travel_destinations && m.travel_destinations.length > 0 && (
               <div style={{
-                marginTop: 16, paddingTop: 14,
-                borderTop: "1px solid rgba(255,255,255,0.06)",
-                fontSize: 12, color: "#a0a0b0",
+                marginTop: 18, paddingTop: 14,
+                borderTop: "1px solid #f0f0f5",
+                fontSize: 12, color: "#6e6e73", lineHeight: 1.6,
               }}>
-                出張: {m.travel_destinations.join(" / ")}
+                <span style={{ color: "#86868b", fontWeight: 600, letterSpacing: "0.05em", marginRight: 8 }}>
+                  出張先
+                </span>
+                {m.travel_destinations.join(" / ")}
               </div>
             )}
           </div>
@@ -148,31 +165,26 @@ export default function PremiumHero({
 
         {/* Philosophy */}
         {p.philosophy && p.philosophy.length > 0 && (
-          <div style={{ marginBottom: 12 }}>
+          <div>
             <div style={{
-              fontSize: 11, color: "#6e6e80", marginBottom: 12,
-              letterSpacing: "0.1em", textTransform: "uppercase",
+              fontSize: 11, color: "#86868b", marginBottom: 12,
+              letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 600,
             }}>
               Why I move fast
             </div>
             <div style={{ display: "grid", gap: 8 }}>
               {p.philosophy.map((line, i) => (
-                <div key={i} style={{ display: "flex", gap: 10, fontSize: 13, color: "#c0c0d0", lineHeight: 1.7 }}>
-                  <span style={{ color: "#0066CC", flexShrink: 0 }}>—</span>
+                <div key={i} style={{
+                  display: "flex", gap: 12,
+                  fontSize: 14, color: "#3a3a3c", lineHeight: 1.7,
+                }}>
+                  <span style={{ color: "#0066CC", flexShrink: 0, fontWeight: 700 }}>—</span>
                   <span>{line}</span>
                 </div>
               ))}
             </div>
           </div>
         )}
-
-        {/* Subtle CTA hint */}
-        <div style={{
-          marginTop: 36, fontSize: 12, color: "#8b8b9a",
-          textAlign: "center", letterSpacing: "0.05em",
-        }}>
-          ↓ この時間枠を、あなたの30分のために空けています ↓
-        </div>
       </div>
     </section>
   );
