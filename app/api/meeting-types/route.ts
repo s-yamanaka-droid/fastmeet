@@ -38,7 +38,8 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const { name, slug, duration_minutes, description, color, buffer_before_minutes,
     buffer_after_minutes, advance_notice_hours, max_days_ahead,
-    working_hours_start, working_hours_end, working_days } = body;
+    working_hours_start, working_hours_end, working_days,
+    conferencing_type, custom_url, location_text } = body;
 
   const { data, error } = await supabase
     .from("fastmeet_meeting_types")
@@ -56,6 +57,9 @@ export async function POST(req: NextRequest) {
       working_hours_start: working_hours_start ?? "09:00",
       working_hours_end: working_hours_end ?? "18:00",
       working_days: working_days ?? [1, 2, 3, 4, 5],
+      conferencing_type: conferencing_type ?? "google_meet",
+      custom_url: custom_url ?? null,
+      location_text: location_text ?? null,
     })
     .select()
     .single();

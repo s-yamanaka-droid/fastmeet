@@ -24,6 +24,9 @@ export default function NewMeetingType() {
     working_hours_start: "09:00",
     working_hours_end: "18:00",
     working_days: [1, 2, 3, 4, 5],
+    conferencing_type: "google_meet" as "google_meet" | "zoom" | "in_person" | "custom_url" | "none",
+    custom_url: "",
+    location_text: "",
   });
 
   function toggleDay(day: number) {
@@ -129,6 +132,73 @@ export default function NewMeetingType() {
               ))}
             </div>
           </div>
+
+          <hr style={{ border: "none", borderTop: "1px solid #e0e0e5", margin: "20px 0" }} />
+
+          <h3 style={{ fontSize: 15, fontWeight: 700, color: "#1d1d1f", marginBottom: 16 }}>ミーティング場所</h3>
+
+          <div style={fieldStyle}>
+            <label style={labelStyle}>会議ツール</label>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 8 }}>
+              {[
+                { value: "google_meet", label: "Google Meet", hint: "自動生成" },
+                { value: "zoom", label: "Zoom", hint: "自動生成" },
+                { value: "custom_url", label: "URLを指定", hint: "Teams等" },
+                { value: "in_person", label: "対面", hint: "場所を指定" },
+                { value: "none", label: "なし", hint: "電話など" },
+              ].map((t) => {
+                const selected = form.conferencing_type === t.value;
+                return (
+                  <button
+                    key={t.value}
+                    type="button"
+                    onClick={() => setForm((f) => ({ ...f, conferencing_type: t.value as typeof f.conferencing_type }))}
+                    style={{
+                      padding: "10px 8px", borderRadius: 10,
+                      border: "1.5px solid",
+                      borderColor: selected ? "#0066CC" : "#e0e0e5",
+                      background: selected ? "#e8f0fe" : "#fff",
+                      color: selected ? "#0066CC" : "#3a3a3c",
+                      cursor: "pointer", textAlign: "center",
+                    }}
+                  >
+                    <div style={{ fontSize: 13, fontWeight: 600 }}>{t.label}</div>
+                    <div style={{ fontSize: 11, color: selected ? "#0066CC" : "#6e6e73", marginTop: 2 }}>{t.hint}</div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {form.conferencing_type === "custom_url" && (
+            <div style={fieldStyle}>
+              <label style={labelStyle}>ミーティングURL</label>
+              <input
+                type="url"
+                placeholder="https://teams.microsoft.com/..."
+                value={form.custom_url}
+                onChange={(e) => setForm((f) => ({ ...f, custom_url: e.target.value }))}
+              />
+            </div>
+          )}
+
+          {form.conferencing_type === "in_person" && (
+            <div style={fieldStyle}>
+              <label style={labelStyle}>場所</label>
+              <input
+                type="text"
+                placeholder="例：弊社オフィス（東京都渋谷区...）"
+                value={form.location_text}
+                onChange={(e) => setForm((f) => ({ ...f, location_text: e.target.value }))}
+              />
+            </div>
+          )}
+
+          {form.conferencing_type === "zoom" && (
+            <div style={{ background: "#fff8e1", border: "1px solid #f9d471", borderRadius: 10, padding: "12px 14px", fontSize: 12, color: "#8b6914", marginBottom: 20, lineHeight: 1.6 }}>
+              Zoomを使うには事前にダッシュボードの「Zoom連携」設定が必要です。未設定の場合、予約は確定しますが Zoomリンクは生成されません（カレンダー登録のみ）。
+            </div>
+          )}
 
           <hr style={{ border: "none", borderTop: "1px solid #e0e0e5", margin: "20px 0" }} />
 

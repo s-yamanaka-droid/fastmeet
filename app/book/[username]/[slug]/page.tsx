@@ -21,6 +21,7 @@ export default function BookingPage({ params }: { params: Promise<{ username: st
   const [showCopyModal, setShowCopyModal] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", company: "", notes: "" });
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [confirmed, setConfirmed] = useState<{ meetingUrl: string | null; cancelToken: string } | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -110,6 +111,7 @@ export default function BookingPage({ params }: { params: Promise<{ username: st
 
     const data = await res.json();
     if (data.booking) {
+      setConfirmed({ meetingUrl: data.booking.meeting_url, cancelToken: data.booking.cancel_token });
       setStep("done");
     } else {
       alert("予約に失敗しました: " + (data.error ?? "不明"));
@@ -146,7 +148,7 @@ export default function BookingPage({ params }: { params: Promise<{ username: st
             </svg>
           </div>
           <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 10, color: "#1d1d1f" }}>予約が確定しました</h2>
-          <p style={{ color: "#6e6e73", fontSize: 15, lineHeight: 1.6 }}>
+          <p style={{ color: "#6e6e73", fontSize: 15, lineHeight: 1.6, marginBottom: 20 }}>
             {selectedSlot && (
               <>
                 {formatTime(selectedSlot.start)}〜{formatTime(selectedSlot.end)}<br />
@@ -154,6 +156,22 @@ export default function BookingPage({ params }: { params: Promise<{ username: st
             )}
             確認メールをお送りしました。<br />Googleカレンダーに反映済みです。
           </p>
+
+          {confirmed?.meetingUrl && (
+            <a href={confirmed.meetingUrl} target="_blank" rel="noopener noreferrer" style={{
+              display: "block", width: "100%", padding: 13, borderRadius: 12, background: "#0066CC", color: "#fff", textDecoration: "none", fontSize: 15, fontWeight: 600, marginBottom: 10, boxSizing: "border-box"
+            }}>
+              ミーティングに参加
+            </a>
+          )}
+
+          {confirmed?.cancelToken && (
+            <a href={`/cancel/${confirmed.cancelToken}`} style={{
+              display: "block", fontSize: 13, color: "#6e6e73", textDecoration: "underline", marginTop: 8
+            }}>
+              予約をキャンセル / 変更
+            </a>
+          )}
         </div>
       </div>
     );
