@@ -5,6 +5,8 @@ import { supabase } from "@/lib/supabase";
 import { formatSlotForCopy, TimeSlot } from "@/lib/availability";
 import type { MeetingType } from "@/lib/supabase";
 import PremiumHero from "./PremiumHero";
+import MonthCalendar from "./MonthCalendar";
+import TimeSlotPicker from "./TimeSlotPicker";
 
 type BookingStep = "slots" | "form" | "done";
 
@@ -24,6 +26,23 @@ export default function BookingPage({ params }: { params: Promise<{ username: st
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [confirmed, setConfirmed] = useState<{ meetingUrl: string | null; cancelToken: string } | null>(null);
   const [premium, setPremium] = useState<{ profile: Record<string, unknown>; metrics: Record<string, unknown> | null } | null>(null);
+  const [guestAuth, setGuestAuth] = useState<{ email: string; name: string; picture?: string } | null>(null);
+
+  // クッキーからゲスト認証情報を読み取り、フォームに自動入力
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const match = document.cookie.match(/fastmeet_guest=([^;]+)/);
+    if (!match) return;
+    try {
+      const data = JSON.parse(decodeURIComponent(match[1]));
+      if (data.email) {
+        setGuestAuth({ email: data.email, name: data.name ?? "", picture: data.picture });
+        setForm((f) => ({ ...f, name: data.name || f.name, email: data.email || f.email }));
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -63,22 +82,28 @@ export default function BookingPage({ params }: { params: Promise<{ username: st
     })();
   }, [username, slug]);
 
-  // Group slots by date
+  // Group slots by date — キーは "YYYY-MM-DD" (Asia/Tokyo) 形式
   const slotsByDate: Record<string, TimeSlot[]> = {};
   for (const slot of slots) {
-    const date = new Intl.DateTimeFormat("ja-JP", {
+    const d = new Date(slot.start);
+    const parts = new Intl.DateTimeFormat("en-CA", {
       timeZone: "Asia/Tokyo", year: "numeric", month: "2-digit", day: "2-digit"
-    }).format(new Date(slot.start));
-    if (!slotsByDate[date]) slotsByDate[date] = [];
-    slotsByDate[date].push(slot);
+    }).formatToParts(d);
+    const y = parts.find((p) => p.type === "year")?.value;
+    const m = parts.find((p) => p.type === "month")?.value;
+    const day = parts.find((p) => p.type === "day")?.value;
+    const dateKey = `${y}-${m}-${day}`;
+    if (!slotsByDate[dateKey]) slotsByDate[dateKey] = [];
+    slotsByDate[dateKey].push(slot);
   }
 
-  const dates = Object.keys(slotsByDate);
+  const availableDateSet = new Set(Object.keys(slotsByDate));
+  const dates = Object.keys(slotsByDate).sort();
   const currentDate = selectedDate ?? dates[0] ?? null;
   const currentSlots = currentDate ? (slotsByDate[currentDate] ?? []) : [];
 
   function formatDateLabel(dateStr: string) {
-    const [y, m, d] = dateStr.split("/").map(Number);
+    const [y, m, d] = dateStr.split("-").map(Number);
     const date = new Date(y, m - 1, d);
     return new Intl.DateTimeFormat("ja-JP", { month: "long", day: "numeric", weekday: "short" }).format(date);
   }
@@ -231,71 +256,34 @@ export default function BookingPage({ params }: { params: Promise<{ username: st
               </button>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: slots.length > 0 ? "220px 1fr" : "1fr", gap: 16 }}>
-              {/* Date selector */}
-              {dates.length > 0 && (
-                <div style={{ background: "#fff", borderRadius: 14, padding: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.06)", alignSelf: "start" }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: "#6e6e73", padding: "4px 8px 8px" }}>日付を選択</div>
-                  {dates.map((d) => (
-                    <button
-                      key={d}
-                      onClick={() => setSelectedDate(d)}
-                      style={{
-                        width: "100%", textAlign: "left", padding: "10px 12px", borderRadius: 10,
-                        border: "none", cursor: "pointer",
-                        background: currentDate === d ? "#e8f0fe" : "transparent",
-                        color: currentDate === d ? "#0066CC" : "#1d1d1f",
-                        fontWeight: currentDate === d ? 600 : 400,
-                        fontSize: 14,
-                      }}
-                    >
-                      {formatDateLabel(d)}
-                      <span style={{ float: "right", fontSize: 12, color: "#6e6e73" }}>
-                        {slotsByDate[d].length}件
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {/* Time slots */}
-              <div>
-                {slots.length === 0 ? (
-                  <div style={{ background: "#fff", borderRadius: 14, padding: 48, textAlign: "center", color: "#6e6e73" }}>
-                    現在ご案内できる空き時間がありません
-                  </div>
-                ) : (
-                  <>
-                    {currentDate && (
-                      <div style={{ fontSize: 16, fontWeight: 600, color: "#1d1d1f", marginBottom: 12 }}>
-                        {formatDateLabel(currentDate)}
-                      </div>
-                    )}
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))", gap: 10 }}>
-                      {currentSlots.map((slot) => (
-                        <button
-                          key={slot.start}
-                          onClick={() => { setSelectedSlot(slot); setStep("form"); }}
-                          style={{
-                            padding: "12px 8px", borderRadius: 12,
-                            border: "1.5px solid",
-                            borderColor: "#0066CC",
-                            background: "#fff",
-                            color: "#0066CC",
-                            fontSize: 15, fontWeight: 600, cursor: "pointer",
-                            transition: "all 0.15s",
-                          }}
-                          onMouseEnter={(e) => { (e.target as HTMLButtonElement).style.background = "#0066CC"; (e.target as HTMLButtonElement).style.color = "#fff"; }}
-                          onMouseLeave={(e) => { (e.target as HTMLButtonElement).style.background = "#fff"; (e.target as HTMLButtonElement).style.color = "#0066CC"; }}
-                        >
-                          {formatTime(slot.start)}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                )}
+            {slots.length === 0 ? (
+              <div style={{ background: "#fff", borderRadius: 14, padding: 48, textAlign: "center", color: "#6e6e73" }}>
+                現在ご案内できる空き時間がありません
               </div>
-            </div>
+            ) : (
+              <div style={{
+                display: "grid",
+                gridTemplateColumns: "minmax(320px, 1fr) minmax(280px, 1fr)",
+                gap: 20,
+              }}
+              className="fm-calendar-grid"
+              >
+                <MonthCalendar
+                  availableDates={availableDateSet}
+                  selectedDate={selectedDate ?? currentDate}
+                  onSelectDate={(d) => { setSelectedDate(d); setSelectedSlot(null); }}
+                  accentColor={meetingType.color}
+                />
+                <TimeSlotPicker
+                  slots={currentSlots}
+                  selectedDate={selectedDate ?? currentDate}
+                  selectedSlot={selectedSlot}
+                  onSelectSlot={(slot) => setSelectedSlot(slot)}
+                  onConfirm={() => setStep("form")}
+                  accentColor={meetingType.color}
+                />
+              </div>
+            )}
           </>
         )}
 
@@ -316,6 +304,42 @@ export default function BookingPage({ params }: { params: Promise<{ username: st
 
             <form onSubmit={handleSubmit} style={{ background: "#fff", borderRadius: 16, padding: 28, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
               <h3 style={{ fontSize: 17, fontWeight: 700, marginBottom: 20, color: "#1d1d1f" }}>お客様情報</h3>
+
+              {/* Google ログインで自動入力 */}
+              {!guestAuth && (
+                <a
+                  href={`/api/guest-auth/start?redirect_to=${encodeURIComponent(typeof window !== "undefined" ? window.location.pathname : "/")}`}
+                  style={{
+                    display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
+                    padding: "12px 20px", marginBottom: 20,
+                    background: "#fff", border: "1.5px solid #e0e0e5", borderRadius: 12,
+                    fontSize: 14, fontWeight: 600, color: "#1d1d1f",
+                    cursor: "pointer", textDecoration: "none", transition: "background 0.15s",
+                  }}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                  </svg>
+                  Googleで自動入力
+                </a>
+              )}
+
+              {guestAuth && (
+                <div style={{
+                  display: "flex", alignItems: "center", gap: 10,
+                  padding: "10px 14px", marginBottom: 20,
+                  background: "#e8f5e9", borderRadius: 10,
+                  fontSize: 13, color: "#1b5e20",
+                }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34A853" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                  <span><strong>{guestAuth.name || guestAuth.email}</strong> としてログイン中</span>
+                </div>
+              )}
 
               {[
                 { label: "お名前 *", key: "name", placeholder: "山田 太郎", required: true },

@@ -71,3 +71,10 @@ input, select, textarea {
 input:focus, select:focus, textarea:focus {
   border-color: var(--accent);
 }
+
+/* FASTMeet - Mobile responsive for booking page */
+@media (max-width: 720px) {
+  .fm-calendar-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
