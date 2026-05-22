@@ -7,8 +7,11 @@ import type { MeetingType } from "@/lib/supabase";
 import PremiumHero from "./PremiumHero";
 import MonthCalendar from "./MonthCalendar";
 import TimeSlotPicker from "./TimeSlotPicker";
+import ProductsTab from "./ProductsTab";
+import SkillsTab from "./SkillsTab";
 
 type BookingStep = "slots" | "form" | "done";
+type ActiveTab = "booking" | "products" | "skills";
 
 export default function BookingPage({ params }: { params: Promise<{ username: string; slug: string }> }) {
   const { username, slug } = use(params);
@@ -27,6 +30,7 @@ export default function BookingPage({ params }: { params: Promise<{ username: st
   const [confirmed, setConfirmed] = useState<{ meetingUrl: string | null; cancelToken: string } | null>(null);
   const [premium, setPremium] = useState<{ profile: Record<string, unknown>; metrics: Record<string, unknown> | null } | null>(null);
   const [guestAuth, setGuestAuth] = useState<{ email: string; name: string; picture?: string } | null>(null);
+  const [activeTab, setActiveTab] = useState<ActiveTab>("booking");
 
   // クッキーからゲスト認証情報を読み取り、フォームに自動入力
   useEffect(() => {
@@ -234,8 +238,56 @@ export default function BookingPage({ params }: { params: Promise<{ username: st
         </div>
       </div>
 
+      {/* Tab navigation (only for premium users, only during slot selection) */}
+      {premium && step === "slots" && (
+        <div style={{ background: "#fff", borderBottom: "1px solid #e0e0e5", padding: "0 24px" }}>
+          <div style={{ maxWidth: 800, margin: "0 auto", display: "flex", gap: 4 }}>
+            {([
+              { id: "booking" as const, label: "予約" },
+              { id: "products" as const, label: "プロダクト" },
+              { id: "skills" as const, label: "スキル" },
+            ]).map((t) => {
+              const isActive = activeTab === t.id;
+              return (
+                <button
+                  key={t.id}
+                  onClick={() => setActiveTab(t.id)}
+                  style={{
+                    padding: "14px 18px",
+                    background: "none",
+                    border: "none",
+                    borderBottom: `2px solid ${isActive ? "#0066CC" : "transparent"}`,
+                    color: isActive ? "#0066CC" : "#6e6e73",
+                    fontSize: 14,
+                    fontWeight: isActive ? 700 : 500,
+                    cursor: "pointer",
+                    transition: "all 0.15s",
+                    marginBottom: -1,
+                  }}
+                >
+                  {t.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       <div style={{ maxWidth: 800, margin: "0 auto", padding: "24px 24px" }}>
-        {step === "slots" && (
+
+        {/* Non-booking tabs */}
+        {step === "slots" && premium && activeTab === "products" && (
+          <ProductsTab
+            products={(premium.profile.products as Parameters<typeof ProductsTab>[0]["products"]) ?? []}
+            corporateLinks={(premium.profile.corporateLinks as Parameters<typeof ProductsTab>[0]["corporateLinks"]) ?? []}
+          />
+        )}
+
+        {step === "slots" && premium && activeTab === "skills" && (
+          <SkillsTab skills={(premium.profile.skills as Parameters<typeof SkillsTab>[0]["skills"]) ?? []} />
+        )}
+
+        {step === "slots" && (!premium || activeTab === "booking") && (
           <>
             {/* Copy text button */}
             <div style={{ marginBottom: 20, display: "flex", justifyContent: "flex-end" }}>
