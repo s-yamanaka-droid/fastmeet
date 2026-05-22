@@ -31,6 +31,7 @@ export default function BookingPage({ params }: { params: Promise<{ username: st
   const [premium, setPremium] = useState<{ profile: Record<string, unknown>; metrics: Record<string, unknown> | null } | null>(null);
   const [guestAuth, setGuestAuth] = useState<{ email: string; name: string; picture?: string } | null>(null);
   const [activeTab, setActiveTab] = useState<ActiveTab>("booking");
+  const [allTypes, setAllTypes] = useState<MeetingType[]>([]);
 
   // クッキーからゲスト認証情報を読み取り、フォームに自動入力
   useEffect(() => {
@@ -68,14 +69,17 @@ export default function BookingPage({ params }: { params: Promise<{ username: st
         setPremium({ profile: user.profile_data ?? {}, metrics: metrics ?? null });
       }
 
-      const { data: mt } = await supabase
+      // 全アクティブ種別を取得（種別切替タブ用）
+      const { data: types } = await supabase
         .from("fastmeet_meeting_types")
         .select("*")
         .eq("user_id", user.id)
-        .eq("slug", slug)
         .eq("is_active", true)
-        .single();
+        .order("duration_minutes", { ascending: true });
 
+      setAllTypes(types ?? []);
+
+      const mt = (types ?? []).find((t) => t.slug === slug);
       if (!mt) { setLoading(false); return; }
       setMeetingType(mt);
 
@@ -233,7 +237,44 @@ export default function BookingPage({ params }: { params: Promise<{ username: st
             </span>
           </div>
           {meetingType.description && (
-            <p style={{ fontSize: 14, color: "#6e6e73", margin: 0 }}>{meetingType.description}</p>
+            <p style={{ fontSize: 14, color: "#6e6e73", margin: "0 0 14px" }}>{meetingType.description}</p>
+          )}
+
+          {/* Duration switcher */}
+          {allTypes.length > 1 && step === "slots" && (
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", paddingTop: 8 }}>
+              <span style={{ fontSize: 11, color: "#86868b", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", alignSelf: "center", marginRight: 6 }}>
+                所要時間で切り替え
+              </span>
+              {allTypes.map((t) => {
+                const isActive = t.slug === slug;
+                return (
+                  <a
+                    key={t.id}
+                    href={`/book/${username}/${t.slug}`}
+                    style={{
+                      display: "inline-flex", alignItems: "center", gap: 6,
+                      padding: "6px 14px", borderRadius: 20,
+                      background: isActive ? t.color : "#fff",
+                      color: isActive ? "#fff" : "#3a3a3c",
+                      border: `1.5px solid ${isActive ? t.color : "#e0e0e5"}`,
+                      fontSize: 13, fontWeight: 700,
+                      textDecoration: "none",
+                      transition: "all 0.15s",
+                      letterSpacing: "-0.005em",
+                    }}
+                  >
+                    <span>{t.duration_minutes}分</span>
+                    <span style={{
+                      fontSize: 11, fontWeight: 500,
+                      opacity: 0.85,
+                    }}>
+                      {t.name.replace(/^\d+分/, "").trim() || "ミーティング"}
+                    </span>
+                  </a>
+                );
+              })}
+            </div>
           )}
         </div>
       </div>
