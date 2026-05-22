@@ -1,5 +1,7 @@
 "use client";
 
+import MetricsRich from "./MetricsRich";
+
 type Profile = {
   displayName?: string;
   displayNameEn?: string;
@@ -112,82 +114,8 @@ export default function PremiumHero({
 
         {/* Metrics Card */}
         {metrics && (
-          <div style={{
-            background: "#fff",
-            borderRadius: 16, padding: "22px 24px",
-            marginBottom: 28,
-            boxShadow: "0 2px 12px rgba(0,0,0,0.05), 0 0 0 1px rgba(0,0,0,0.03)",
-          }}>
-            <div style={{
-              display: "flex", alignItems: "center", justifyContent: "space-between",
-              marginBottom: 16,
-            }}>
-              <div style={{
-                fontSize: 11, color: "#86868b",
-                letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 600,
-              }}>
-                {monthLabel}の稼働実態
-              </div>
-              <div style={{
-                display: "flex", alignItems: "center", gap: 6,
-                fontSize: 10, color: "#0066CC", background: "#e8f0fe",
-                padding: "3px 10px", borderRadius: 20, fontWeight: 600,
-                letterSpacing: "0.05em",
-              }}>
-                <span style={{
-                  width: 6, height: 6, borderRadius: 3,
-                  background: "#0066CC",
-                  animation: "fm-pulse 1.6s ease-in-out infinite",
-                  display: "inline-block",
-                }} />
-                LIVE
-                {m.updated_at && (
-                  <span style={{ color: "#86868b", fontWeight: 500, marginLeft: 4 }}>
-                    {relativeTime(m.updated_at)}
-                  </span>
-                )}
-              </div>
-              <style>{`@keyframes fm-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }`}</style>
-            </div>
-
-            <div style={{
-              display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(100px, 1fr))",
-              gap: 18,
-            }}>
-              {[
-                { label: "総稼働", value: m.total_hours ? `${Math.round(m.total_hours)}h` : "-" },
-                { label: "商談", value: m.meeting_count != null ? `${m.meeting_count}件` : "-" },
-                { label: "出張先", value: m.travel_destinations?.length ? `${m.travel_destinations.length}都市` : "-" },
-                { label: "Claude", value: m.claude_prompts != null ? `${(m.claude_prompts/1000).toFixed(1)}k` : "-" },
-                { label: "深夜稼働", value: m.late_night_count != null ? `${m.late_night_count}回` : "-" },
-                { label: "週末予定", value: m.weekend_count != null ? `${m.weekend_count}件` : "-" },
-              ].map((stat) => (
-                <div key={stat.label}>
-                  <div style={{
-                    fontSize: 22, fontWeight: 700, color: "#0066CC",
-                    letterSpacing: "-0.02em",
-                  }}>
-                    {stat.value}
-                  </div>
-                  <div style={{ fontSize: 11, color: "#86868b", marginTop: 3, fontWeight: 500 }}>
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {m.travel_destinations && m.travel_destinations.length > 0 && (
-              <div style={{
-                marginTop: 18, paddingTop: 14,
-                borderTop: "1px solid #f0f0f5",
-                fontSize: 12, color: "#6e6e73", lineHeight: 1.6,
-              }}>
-                <span style={{ color: "#86868b", fontWeight: 600, letterSpacing: "0.05em", marginRight: 8 }}>
-                  出張先
-                </span>
-                {m.travel_destinations.join(" / ")}
-              </div>
-            )}
+          <div style={{ marginBottom: 28 }}>
+            <MetricsRich metrics={metrics} />
           </div>
         )}
 
