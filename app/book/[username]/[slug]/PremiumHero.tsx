@@ -23,7 +23,22 @@ type Metrics = {
   weekend_count?: number;
   active_days?: number;
   total_hours?: number;
+  updated_at?: string;
 };
+
+function relativeTime(iso?: string): string {
+  if (!iso) return "";
+  const now = Date.now();
+  const t = new Date(iso).getTime();
+  const diffSec = Math.max(0, Math.floor((now - t) / 1000));
+  if (diffSec < 60) return `${diffSec}秒前`;
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) return `${diffMin}分前`;
+  const diffHour = Math.floor(diffMin / 60);
+  if (diffHour < 24) return `${diffHour}時間前`;
+  const diffDay = Math.floor(diffHour / 24);
+  return `${diffDay}日前`;
+}
 
 export default function PremiumHero({
   profile,
@@ -114,12 +129,25 @@ export default function PremiumHero({
                 {monthLabel}の稼働実態
               </div>
               <div style={{
+                display: "flex", alignItems: "center", gap: 6,
                 fontSize: 10, color: "#0066CC", background: "#e8f0fe",
                 padding: "3px 10px", borderRadius: 20, fontWeight: 600,
                 letterSpacing: "0.05em",
               }}>
+                <span style={{
+                  width: 6, height: 6, borderRadius: 3,
+                  background: "#0066CC",
+                  animation: "fm-pulse 1.6s ease-in-out infinite",
+                  display: "inline-block",
+                }} />
                 LIVE
+                {m.updated_at && (
+                  <span style={{ color: "#86868b", fontWeight: 500, marginLeft: 4 }}>
+                    {relativeTime(m.updated_at)}
+                  </span>
+                )}
               </div>
+              <style>{`@keyframes fm-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }`}</style>
             </div>
 
             <div style={{
