@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /cancel/
+
+Sitemap: https://fastmeet.vercel.app/sitemap.xml
