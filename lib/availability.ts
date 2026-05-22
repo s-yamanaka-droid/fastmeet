@@ -57,8 +57,16 @@ export function generateSlots(
   const advanceNoticeMs = meetingType.advance_notice_hours * 60 * 60 * 1000;
   const earliestStart = new Date(now.getTime() + advanceNoticeMs);
 
+  // 24時間以上連続するbusy（終日出張・休暇ブロック等）は除外。
+  // 個別の予定（数時間まで）だけを busy として扱う。
+  const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+  const filteredBusy = busyTimes.filter((b) => {
+    const dur = new Date(b.end).getTime() - new Date(b.start).getTime();
+    return dur < ONE_DAY_MS;
+  });
+
   const busyIntervals = [
-    ...busyTimes.map((b) => ({ start: new Date(b.start), end: new Date(b.end) })),
+    ...filteredBusy.map((b) => ({ start: new Date(b.start), end: new Date(b.end) })),
     ...existingBookings.map((b) => ({
       start: new Date(b.start_time),
       end: new Date(b.end_time),
