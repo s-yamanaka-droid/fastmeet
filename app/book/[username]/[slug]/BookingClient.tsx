@@ -26,8 +26,27 @@ type Props = {
 };
 
 export default function BookingClient({ username, slug, initialData }: Props) {
-  const [meetingType] = useState<MeetingType | null>(initialData.meetingType);
-  const [slots] = useState<TimeSlot[]>(initialData.slots);
+  const [meetingType, setMeetingType] = useState<MeetingType | null>(initialData.meetingType);
+  const [slots, setSlots] = useState<TimeSlot[]>(initialData.slots);
+  const [switchingType, setSwitchingType] = useState(false);
+
+  // 種別を切り替える（URL変えずに state + 新スロット取得）
+  async function switchMeetingType(t: MeetingType) {
+    if (t.id === meetingType?.id) return;
+    setSwitchingType(true);
+    setMeetingType(t);
+    setSelectedSlot(null);
+    setSelectedDate(null);
+    try {
+      const res = await fetch(`/api/availability?typeId=${t.id}`);
+      const data = await res.json();
+      setSlots(data.slots ?? []);
+    } catch {
+      setSlots([]);
+    }
+    setSwitchingType(false);
+  }
+  void slug; void username; // URL変更しないため slug/username 使わない
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
   const [step, setStep] = useState<BookingStep>("slots");
   const loading = false;
@@ -218,11 +237,12 @@ export default function BookingClient({ username, slug, initialData }: Props) {
                 所要時間で切り替え
               </span>
               {allTypes.map((t) => {
-                const isActive = t.slug === slug;
+                const isActive = t.id === meetingType?.id;
                 return (
-                  <a
+                  <button
                     key={t.id}
-                    href={`/book/${username}/${t.slug}`}
+                    onClick={() => switchMeetingType(t)}
+                    disabled={switchingType || isActive}
                     style={{
                       display: "inline-flex", alignItems: "center", gap: 6,
                       padding: "6px 14px", borderRadius: 20,
@@ -233,6 +253,8 @@ export default function BookingClient({ username, slug, initialData }: Props) {
                       textDecoration: "none",
                       transition: "all 0.15s",
                       letterSpacing: "-0.005em",
+                      cursor: isActive || switchingType ? "default" : "pointer",
+                      opacity: switchingType && !isActive ? 0.55 : 1,
                     }}
                   >
                     <span>{t.duration_minutes}分</span>
@@ -242,7 +264,7 @@ export default function BookingClient({ username, slug, initialData }: Props) {
                     }}>
                       {t.name.replace(/^\d+分/, "").trim() || "ミーティング"}
                     </span>
-                  </a>
+                  </button>
                 );
               })}
             </div>

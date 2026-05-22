@@ -27,7 +27,7 @@ export type BookingPageData = {
   slots: TimeSlot[];
 };
 
-export async function getBookingData(username: string, slug: string): Promise<BookingPageData> {
+export async function getBookingData(username: string, slug?: string): Promise<BookingPageData> {
   // 1) ユーザー + メトリクス + 全種別 を並列取得
   const [userRes, typesRes] = await Promise.all([
     serverSupabase
@@ -62,7 +62,10 @@ export async function getBookingData(username: string, slug: string): Promise<Bo
   ]);
 
   const allTypes = (allTypesRes.data ?? []) as MeetingType[];
-  const meetingType = allTypes.find((t) => t.slug === slug) ?? null;
+  // slug 指定なしの場合は最短duration（30分）をデフォルトに
+  const meetingType = slug
+    ? (allTypes.find((t) => t.slug === slug) ?? null)
+    : (allTypes[0] ?? null);
   const bookings = bookingsRes.data ?? [];
 
   // 3) 該当種別が見つかれば BusyTimes 取得 → スロット生成
