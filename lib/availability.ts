@@ -5,16 +5,32 @@ export type TimeSlot = {
   end: string;
 };
 
-function toJST(date: Date): Date {
-  // date is already in JS Date (UTC). Return same object for comparison.
-  return date;
+const JST_OFFSET_MS = 9 * 60 * 60 * 1000;
+
+/**
+ * JSTの「指定年月日 0:00」を表すUTC Dateを返す。
+ * 例: jstMidnight(2026, 5, 23) → JST 2026-05-23 00:00 = UTC 2026-05-22 15:00
+ */
+function jstMidnight(year: number, month0: number, day: number): Date {
+  // Date.UTC(y, m, d, h, ...) は UTC基準。JSTの 0:00 を表すには UTC -9時 にする。
+  return new Date(Date.UTC(year, month0, day, -9, 0, 0, 0));
 }
 
-function parseTime(timeStr: string, baseDate: Date): Date {
+/** JSTのhh:mmを、指定したJST日の midnight に加算してUTC Dateを返す */
+function jstTimeOnDay(jstDayMidnight: Date, timeStr: string): Date {
   const [h, m] = timeStr.split(":").map(Number);
-  const d = new Date(baseDate);
-  d.setHours(h, m, 0, 0);
-  return d;
+  return new Date(jstDayMidnight.getTime() + h * 60 * 60 * 1000 + m * 60 * 1000);
+}
+
+/** JSTのY/M/Dと曜日を取得 */
+function jstParts(date: Date): { year: number; month0: number; day: number; dayOfWeek: number } {
+  const jstView = new Date(date.getTime() + JST_OFFSET_MS);
+  return {
+    year: jstView.getUTCFullYear(),
+    month0: jstView.getUTCMonth(),
+    day: jstView.getUTCDate(),
+    dayOfWeek: jstView.getUTCDay(),
+  };
 }
 
 function addMinutes(date: Date, minutes: number): Date {
@@ -49,19 +65,25 @@ export function generateSlots(
     })),
   ];
 
+  // JST基準で「今日」のY/M/Dを取得
+  const startParts = jstParts(fromDate);
+
   for (let dayOffset = 0; dayOffset < meetingType.max_days_ahead; dayOffset++) {
-    const day = new Date(fromDate);
-    day.setDate(day.getDate() + dayOffset);
+    // JST基準で日付を進める
+    const dayJstMidnight = jstMidnight(
+      startParts.year,
+      startParts.month0,
+      startParts.day + dayOffset
+    );
+
+    // JST基準の曜日
+    const { dayOfWeek } = jstParts(dayJstMidnight);
 
     // working_days: 0=Sun, 1=Mon, ..., 6=Sat
-    const dayOfWeek = day.getDay();
     if (!meetingType.working_days.includes(dayOfWeek)) continue;
 
-    // Set date to midnight JST
-    day.setHours(0, 0, 0, 0);
-
-    const workStart = parseTime(meetingType.working_hours_start, day);
-    const workEnd = parseTime(meetingType.working_hours_end, day);
+    const workStart = jstTimeOnDay(dayJstMidnight, meetingType.working_hours_start);
+    const workEnd = jstTimeOnDay(dayJstMidnight, meetingType.working_hours_end);
 
     let cursor = new Date(workStart);
     while (cursor < workEnd) {
