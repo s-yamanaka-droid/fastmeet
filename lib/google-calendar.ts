@@ -7,6 +7,24 @@ export function getOAuthClient() {
   );
 }
 
+// 「予約取れない」と判定すべきでないイベントの判別。
+// - 「タスク：◯◯」「task:◯◯」「ブロック：◯◯」「その他：」 等のメモ的エントリ
+// - transparency=transparent（カレンダー側で「予定なし扱い」マーク済み）
+const SKIP_TITLE_PATTERNS = [
+  /^タスク[:：]/i,
+  /^task[:：]/i,
+  /^ブロック[:：]/i,
+  /^その他[:：]/i,
+  /^移動[:：]/i,  // 移動はカレンダー上の自己リマインドなので予約可
+];
+
+function shouldSkipAsBusy(ev: { summary?: string | null; transparency?: string | null }): boolean {
+  if (ev.transparency === "transparent") return true;
+  const title = (ev.summary ?? "").trim();
+  if (!title) return false;
+  return SKIP_TITLE_PATTERNS.some((rx) => rx.test(title));
+}
+
 export async function getBusyTimes(
   refreshToken: string,
   timeMin: string,
@@ -17,17 +35,44 @@ export async function getBusyTimes(
 
   const calendar = google.calendar({ version: "v3", auth });
 
-  const res = await calendar.freebusy.query({
-    requestBody: {
-      timeMin,
-      timeMax,
-      timeZone: "Asia/Tokyo",
-      items: [{ id: "primary" }],
-    },
+  // events.list で取得（summary・transparency 込み）
+  const res = await calendar.events.list({
+    calendarId: "primary",
+    timeMin,
+    timeMax,
+    timeZone: "Asia/Tokyo",
+    singleEvents: true,
+    orderBy: "startTime",
+    maxResults: 2500,
   });
 
-  const busy = res.data.calendars?.["primary"]?.busy ?? [];
-  return busy.map((b) => ({ start: b.start!, end: b.end! }));
+  const items = res.data.items ?? [];
+  const busy: Array<{ start: string; end: string }> = [];
+
+  for (const ev of items) {
+    if (shouldSkipAsBusy(ev)) continue;
+    // status=cancelled / declined はスキップ
+    if (ev.status === "cancelled") continue;
+    // 山中本人が declined しているイベントもスキップ
+    const myAttendee = ev.attendees?.find((a) => a.self);
+    if (myAttendee?.responseStatus === "declined") continue;
+
+    const start = ev.start?.dateTime ?? ev.start?.date;
+    const end = ev.end?.dateTime ?? ev.end?.date;
+    if (!start || !end) continue;
+
+    // 終日イベント（date 形式）の場合、time は 00:00 JST 開始として ISO 化
+    const startIso = ev.start?.dateTime
+      ? start
+      : new Date(`${start}T00:00:00+09:00`).toISOString();
+    const endIso = ev.end?.dateTime
+      ? end
+      : new Date(`${end}T00:00:00+09:00`).toISOString();
+
+    busy.push({ start: startIso, end: endIso });
+  }
+
+  return busy;
 }
 
 export type ConferencingType = "google_meet" | "zoom" | "in_person" | "custom_url" | "none";
