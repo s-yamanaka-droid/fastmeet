@@ -21,12 +21,12 @@ export default function SkillsTab({ skills = [] }: Props) {
   return (
     <div>
       <div style={{
-        fontSize: 11, color: "#86868b", fontWeight: 600,
+        fontSize: 11, color: "#5e5e63", fontWeight: 600,
         letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10,
       }}>
         専門領域
       </div>
-      <div style={{ fontSize: 13, color: "#6e6e73", marginBottom: 24, lineHeight: 1.6 }}>
+      <div style={{ fontSize: 13, color: "#4b5563", marginBottom: 24, lineHeight: 1.6 }}>
         実務で日常的に手を動かしている領域。商談時に「何ができる人か」を即把握いただけます。
       </div>
 

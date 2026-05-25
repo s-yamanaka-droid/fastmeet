@@ -44,14 +44,14 @@ export default function CancelPage({ params }: { params: Promise<{ token: string
   const wrap = { minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f5f5f7", padding: 24 };
   const card = { background: "#fff", borderRadius: 20, padding: 40, maxWidth: 480, width: "100%", textAlign: "center" as const, boxShadow: "0 4px 24px rgba(0,0,0,0.08)" };
 
-  if (loading) return <div style={wrap}><div style={{ color: "#6e6e73" }}>読み込み中...</div></div>;
+  if (loading) return <div style={wrap}><div style={{ color: "#4b5563" }}>読み込み中...</div></div>;
 
   if (!booking) {
     return (
       <div style={wrap}>
         <div style={card}>
           <div style={{ fontSize: 24, fontWeight: 700, color: "#1d1d1f", marginBottom: 8 }}>予約が見つかりません</div>
-          <div style={{ color: "#6e6e73", fontSize: 14 }}>URLが正しいかご確認ください</div>
+          <div style={{ color: "#4b5563", fontSize: 14 }}>URLが正しいかご確認ください</div>
         </div>
       </div>
     );
@@ -62,14 +62,14 @@ export default function CancelPage({ params }: { params: Promise<{ token: string
       <div style={wrap}>
         <div style={card}>
           <div style={{ width: 64, height: 64, borderRadius: 32, background: "#f0f0f5", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px" }}>
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6e6e73" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#4b5563" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10" />
               <line x1="15" y1="9" x2="9" y2="15" />
               <line x1="9" y1="9" x2="15" y2="15" />
             </svg>
           </div>
           <div style={{ fontSize: 22, fontWeight: 700, color: "#1d1d1f", marginBottom: 8 }}>予約をキャンセルしました</div>
-          <div style={{ color: "#6e6e73", fontSize: 14, lineHeight: 1.6 }}>Googleカレンダーからも削除されました</div>
+          <div style={{ color: "#4b5563", fontSize: 14, lineHeight: 1.6 }}>Googleカレンダーからも削除されました</div>
         </div>
       </div>
     );
@@ -80,7 +80,7 @@ export default function CancelPage({ params }: { params: Promise<{ token: string
       <div style={card}>
         <div style={{ fontSize: 22, fontWeight: 700, color: "#1d1d1f", marginBottom: 16 }}>予約をキャンセルしますか？</div>
         <div style={{ background: "#f5f5f7", borderRadius: 12, padding: "14px 16px", marginBottom: 24, textAlign: "left" }}>
-          <div style={{ fontSize: 13, color: "#6e6e73", marginBottom: 4 }}>予約日時</div>
+          <div style={{ fontSize: 13, color: "#4b5563", marginBottom: 4 }}>予約日時</div>
           <div style={{ fontSize: 15, fontWeight: 600, color: "#1d1d1f" }}>{formatDT(booking.start_time)}</div>
         </div>
         <button

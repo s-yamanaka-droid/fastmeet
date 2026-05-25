@@ -163,7 +163,7 @@ export default function NewMeetingType() {
                     }}
                   >
                     <div style={{ fontSize: 13, fontWeight: 600 }}>{t.label}</div>
-                    <div style={{ fontSize: 11, color: selected ? "#0066CC" : "#6e6e73", marginTop: 2 }}>{t.hint}</div>
+                    <div style={{ fontSize: 11, color: selected ? "#0066CC" : "#4b5563", marginTop: 2 }}>{t.hint}</div>
                   </button>
                 );
               })}

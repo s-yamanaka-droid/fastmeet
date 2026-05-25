@@ -155,7 +155,7 @@ export default function BookingClient({ username, slug, initialData }: Props) {
   if (loading) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f5f5f7" }}>
-        <div style={{ color: "#6e6e73", fontSize: 15 }}>読み込み中...</div>
+        <div style={{ color: "#4b5563", fontSize: 15 }}>読み込み中...</div>
       </div>
     );
   }
@@ -165,7 +165,7 @@ export default function BookingClient({ username, slug, initialData }: Props) {
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f5f5f7" }}>
         <div style={{ textAlign: "center" }}>
           <div style={{ fontSize: 48, marginBottom: 12 }}>404</div>
-          <div style={{ color: "#6e6e73" }}>このページは存在しません</div>
+          <div style={{ color: "#4b5563" }}>このページは存在しません</div>
         </div>
       </div>
     );
@@ -181,7 +181,7 @@ export default function BookingClient({ username, slug, initialData }: Props) {
             </svg>
           </div>
           <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 10, color: "#1d1d1f" }}>予約が確定しました</h2>
-          <p style={{ color: "#6e6e73", fontSize: 15, lineHeight: 1.6, marginBottom: 20 }}>
+          <p style={{ color: "#4b5563", fontSize: 15, lineHeight: 1.6, marginBottom: 20 }}>
             {selectedSlot && (
               <>
                 {formatTime(selectedSlot.start)}〜{formatTime(selectedSlot.end)}<br />
@@ -200,7 +200,7 @@ export default function BookingClient({ username, slug, initialData }: Props) {
 
           {confirmed?.cancelToken && (
             <a href={`/cancel/${confirmed.cancelToken}`} style={{
-              display: "block", fontSize: 13, color: "#6e6e73", textDecoration: "underline", marginTop: 8
+              display: "block", fontSize: 13, color: "#4b5563", textDecoration: "underline", marginTop: 8
             }}>
               予約をキャンセル / 変更
             </a>
@@ -221,18 +221,18 @@ export default function BookingClient({ username, slug, initialData }: Props) {
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
             <div style={{ width: 8, height: 8, borderRadius: 4, background: meetingType.color }} />
             <span style={{ fontSize: 18, fontWeight: 700, color: "#1d1d1f" }}>{meetingType.name}</span>
-            <span style={{ fontSize: 13, color: "#6e6e73", background: "#f0f0f5", padding: "2px 10px", borderRadius: 20 }}>
+            <span style={{ fontSize: 13, color: "#4b5563", background: "#f0f0f5", padding: "2px 10px", borderRadius: 20 }}>
               {meetingType.duration_minutes}分
             </span>
           </div>
           {meetingType.description && (
-            <p style={{ fontSize: 14, color: "#6e6e73", margin: "0 0 14px" }}>{meetingType.description}</p>
+            <p style={{ fontSize: 14, color: "#4b5563", margin: "0 0 14px" }}>{meetingType.description}</p>
           )}
 
           {/* Duration switcher */}
           {allTypes.length > 1 && step === "slots" && (
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", paddingTop: 8 }}>
-              <span style={{ fontSize: 11, color: "#86868b", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", alignSelf: "center", marginRight: 6 }}>
+              <span style={{ fontSize: 11, color: "#5e5e63", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", alignSelf: "center", marginRight: 6 }}>
                 所要時間で切り替え
               </span>
               {allTypes.map((t) => {
@@ -290,7 +290,7 @@ export default function BookingClient({ username, slug, initialData }: Props) {
                     background: "none",
                     border: "none",
                     borderBottom: `2px solid ${isActive ? "#0066CC" : "transparent"}`,
-                    color: isActive ? "#0066CC" : "#6e6e73",
+                    color: isActive ? "#0066CC" : "#4b5563",
                     fontSize: 14,
                     fontWeight: isActive ? 700 : 500,
                     cursor: "pointer",
@@ -342,7 +342,7 @@ export default function BookingClient({ username, slug, initialData }: Props) {
             </div>
 
             {slots.length === 0 ? (
-              <div style={{ background: "#fff", borderRadius: 14, padding: 48, textAlign: "center", color: "#6e6e73" }}>
+              <div style={{ background: "#fff", borderRadius: 14, padding: 48, textAlign: "center", color: "#4b5563" }}>
                 現在ご案内できる空き時間がありません
               </div>
             ) : (
@@ -442,7 +442,7 @@ export default function BookingClient({ username, slug, initialData }: Props) {
           <div style={{ background: "#fff", borderRadius: 20, padding: 28, maxWidth: 560, width: "100%", boxShadow: "0 8px 32px rgba(0,0,0,0.15)" }} onClick={(e) => e.stopPropagation()}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
               <h3 style={{ fontSize: 17, fontWeight: 700, margin: 0 }}>候補日テキスト</h3>
-              <button onClick={() => setShowCopyModal(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "#6e6e73", fontSize: 20 }}>×</button>
+              <button onClick={() => setShowCopyModal(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "#4b5563", fontSize: 20 }}>×</button>
             </div>
             <textarea
               readOnly

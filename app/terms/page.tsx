@@ -17,7 +17,7 @@ export default function TermsPage() {
         <h1 style={{ fontSize: 28, fontWeight: 700, letterSpacing: "-0.02em", marginBottom: 8 }}>
           利用規約
         </h1>
-        <div style={{ fontSize: 13, color: "#86868b", marginBottom: 32 }}>
+        <div style={{ fontSize: 13, color: "#5e5e63", marginBottom: 32 }}>
           最終更新: 2026年5月25日
         </div>
 
@@ -100,7 +100,7 @@ export default function TermsPage() {
           <p>本規約に関するお問い合わせは <Link href="/contact" style={a}>お問い合わせページ</Link> または <a href="mailto:s-yamanaka@tre-pro.co.jp" style={a}>s-yamanaka@tre-pro.co.jp</a> までご連絡ください。</p>
         </Section>
 
-        <div style={{ marginTop: 40, paddingTop: 24, borderTop: "1px solid #e0e0e5", fontSize: 12, color: "#86868b" }}>
+        <div style={{ marginTop: 40, paddingTop: 24, borderTop: "1px solid #e0e0e5", fontSize: 12, color: "#5e5e63" }}>
           関連: <Link href="/privacy" style={a}>プライバシーポリシー</Link> / <Link href="/contact" style={a}>お問い合わせ</Link> / <Link href="/" style={a}>トップ</Link>
         </div>
       </article>

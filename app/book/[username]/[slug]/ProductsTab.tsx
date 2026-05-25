@@ -28,7 +28,7 @@ export default function ProductsTab({ products = [], corporateLinks = [] }: Prop
       {corporateLinks.length > 0 && (
         <div style={{ marginBottom: 28 }}>
           <div style={{
-            fontSize: 11, color: "#86868b", fontWeight: 600,
+            fontSize: 11, color: "#5e5e63", fontWeight: 600,
             letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10,
           }}>
             関連サイト
@@ -50,7 +50,7 @@ export default function ProductsTab({ products = [], corporateLinks = [] }: Prop
                 }}
               >
                 <span>{link.name}</span>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#86868b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5e5e63" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
                   <polyline points="15 3 21 3 21 9"/>
                   <line x1="10" y1="14" x2="21" y2="3"/>
@@ -62,12 +62,12 @@ export default function ProductsTab({ products = [], corporateLinks = [] }: Prop
       )}
 
       <div style={{
-        fontSize: 11, color: "#86868b", fontWeight: 600,
+        fontSize: 11, color: "#5e5e63", fontWeight: 600,
         letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10,
       }}>
         プロダクト・ツール
       </div>
-      <div style={{ fontSize: 13, color: "#6e6e73", marginBottom: 20, lineHeight: 1.6 }}>
+      <div style={{ fontSize: 13, color: "#4b5563", marginBottom: 20, lineHeight: 1.6 }}>
         現場で開発し、社外公開しているプロダクト群です。すべて触って試せます。
       </div>
 
@@ -116,7 +116,7 @@ export default function ProductsTab({ products = [], corporateLinks = [] }: Prop
                   {p.name}
                 </div>
                 {p.category && (
-                  <div style={{ fontSize: 11, color: "#86868b", marginTop: 1 }}>
+                  <div style={{ fontSize: 11, color: "#5e5e63", marginTop: 1 }}>
                     {p.category}
                   </div>
                 )}
@@ -135,7 +135,7 @@ export default function ProductsTab({ products = [], corporateLinks = [] }: Prop
             )}
 
             {p.description && (
-              <div style={{ fontSize: 12, color: "#6e6e73", lineHeight: 1.6 }}>
+              <div style={{ fontSize: 12, color: "#4b5563", lineHeight: 1.6 }}>
                 {p.description}
               </div>
             )}

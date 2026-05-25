@@ -18,7 +18,7 @@ export default async function BookingPage({
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f5f5f7" }}>
         <div style={{ textAlign: "center" }}>
           <div style={{ fontSize: 48, marginBottom: 12 }}>404</div>
-          <div style={{ color: "#6e6e73" }}>このユーザーは存在しません</div>
+          <div style={{ color: "#4b5563" }}>このユーザーは存在しません</div>
         </div>
       </div>
     );
@@ -29,7 +29,7 @@ export default async function BookingPage({
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f5f5f7" }}>
         <div style={{ textAlign: "center" }}>
           <div style={{ fontSize: 48, marginBottom: 12 }}>404</div>
-          <div style={{ color: "#6e6e73" }}>このミーティング種別は存在しません</div>
+          <div style={{ color: "#4b5563" }}>このミーティング種別は存在しません</div>
         </div>
       </div>
     );

@@ -81,11 +81,11 @@ export default function DashboardClient({ username, initialMeetingTypes, initial
           </div>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             {username && (
-              <span style={{ fontSize: 13, color: '#6e6e73' }}>@{username}</span>
+              <span style={{ fontSize: 13, color: '#4b5563' }}>@{username}</span>
             )}
             <a
               href="/api/auth/signout?callbackUrl=/"
-              style={{ padding: '6px 14px', borderRadius: 8, background: '#f0f0f5', color: '#6e6e73', textDecoration: 'none', fontSize: 14 }}
+              style={{ padding: '6px 14px', borderRadius: 8, background: '#f0f0f5', color: '#4b5563', textDecoration: 'none', fontSize: 14 }}
             >
               ログアウト
             </a>
@@ -107,7 +107,7 @@ export default function DashboardClient({ username, initialMeetingTypes, initial
 
         <div style={{ display: 'grid', gap: 12, marginBottom: 40 }}>
           {meetingTypes.length === 0 && (
-            <div style={{ background: '#fff', borderRadius: 14, padding: 40, textAlign: 'center', color: '#6e6e73', fontSize: 15 }}>
+            <div style={{ background: '#fff', borderRadius: 14, padding: 40, textAlign: 'center', color: '#4b5563', fontSize: 15 }}>
               まだ種別がありません。「+ 新規作成」から追加してください。
             </div>
           )}
@@ -120,7 +120,7 @@ export default function DashboardClient({ username, initialMeetingTypes, initial
               <div style={{ width: 10, height: 10, borderRadius: 5, background: type.color, flexShrink: 0 }} />
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: 600, fontSize: 15, color: '#1d1d1f' }}>{type.name}</div>
-                <div style={{ fontSize: 13, color: '#6e6e73', marginTop: 2 }}>{type.duration_minutes}分</div>
+                <div style={{ fontSize: 13, color: '#4b5563', marginTop: 2 }}>{type.duration_minutes}分</div>
                 {username && (
                   <div style={{ fontSize: 12, color: '#0066CC', marginTop: 2 }}>
                     /book/{username}/{type.slug}
@@ -161,7 +161,7 @@ export default function DashboardClient({ username, initialMeetingTypes, initial
         <h2 style={{ fontSize: 20, fontWeight: 700, color: '#1d1d1f', marginBottom: 16 }}>今後の予定</h2>
         <div style={{ display: 'grid', gap: 10 }}>
           {initialBookings.length === 0 && (
-            <div style={{ background: '#fff', borderRadius: 14, padding: 40, textAlign: 'center', color: '#6e6e73', fontSize: 15 }}>
+            <div style={{ background: '#fff', borderRadius: 14, padding: 40, textAlign: 'center', color: '#4b5563', fontSize: 15 }}>
               まだ予約はありません。
             </div>
           )}
@@ -178,11 +178,11 @@ export default function DashboardClient({ username, initialMeetingTypes, initial
                 <div style={{ fontWeight: 600, fontSize: 15, color: '#1d1d1f' }}>
                   {b.guest_name}{b.guest_company && ` (${b.guest_company})`}
                 </div>
-                <div style={{ fontSize: 13, color: '#6e6e73', marginTop: 3 }}>
+                <div style={{ fontSize: 13, color: '#4b5563', marginTop: 3 }}>
                   {formatDateTime(b.start_time)} 〜 {formatEndTime(b.end_time)}
                 </div>
               </div>
-              <div style={{ fontSize: 13, color: '#6e6e73' }}>{b.guest_email}</div>
+              <div style={{ fontSize: 13, color: '#4b5563' }}>{b.guest_email}</div>
             </div>
           ))}
         </div>

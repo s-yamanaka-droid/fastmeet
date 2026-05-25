@@ -108,7 +108,7 @@ export default function MonthCalendar({
             key={w}
             style={{
               textAlign: "center", fontSize: 11, fontWeight: 600,
-              color: i === 0 ? "#d93025" : i === 6 ? "#1a73e8" : "#86868b",
+              color: i === 0 ? "#d93025" : i === 6 ? "#1a73e8" : "#5e5e63",
               padding: "4px 0",
             }}
           >
@@ -181,7 +181,7 @@ export default function MonthCalendar({
       </div>
 
       {/* Legend */}
-      <div style={{ display: "flex", gap: 16, marginTop: 16, fontSize: 11, color: "#86868b" }}>
+      <div style={{ display: "flex", gap: 16, marginTop: 16, fontSize: 11, color: "#5e5e63" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
           <span style={{ width: 8, height: 8, borderRadius: 4, background: accentColor }} />
           予約可

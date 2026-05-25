@@ -45,10 +45,12 @@ export default function TimeSlotPicker({
     { label: "夜", slots: [] },
   ];
 
+  // JST時刻（UTC+9）で「午前/午後/夜」を判定
   for (const s of slots) {
-    const h = new Date(s.start).getHours();
-    if (h < 12) groups[0].slots.push(s);
-    else if (h < 18) groups[1].slots.push(s);
+    const dt = new Date(s.start);
+    const jstHour = (dt.getUTCHours() + 9) % 24;
+    if (jstHour < 12) groups[0].slots.push(s);
+    else if (jstHour < 18) groups[1].slots.push(s);
     else groups[2].slots.push(s);
   }
 
@@ -59,7 +61,7 @@ export default function TimeSlotPicker({
       <div style={{
         background: "#fff", borderRadius: 16, padding: 32,
         boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-        textAlign: "center", color: "#86868b", fontSize: 14,
+        textAlign: "center", color: "#5e5e63", fontSize: 14,
         minHeight: 200, display: "flex", alignItems: "center", justifyContent: "center",
       }}>
         左のカレンダーから日付を選択してください
@@ -75,12 +77,12 @@ export default function TimeSlotPicker({
       <div style={{ fontSize: 16, fontWeight: 700, color: "#1d1d1f", marginBottom: 4 }}>
         {dateLabel(selectedDate)}
       </div>
-      <div style={{ fontSize: 12, color: "#86868b", marginBottom: 18 }}>
+      <div style={{ fontSize: 12, color: "#5e5e63", marginBottom: 18 }}>
         以下から開始時刻をお選びください
       </div>
 
       {visibleGroups.length === 0 && (
-        <div style={{ color: "#86868b", fontSize: 14, textAlign: "center", padding: 24 }}>
+        <div style={{ color: "#5e5e63", fontSize: 14, textAlign: "center", padding: 24 }}>
           この日に空きスロットはありません
         </div>
       )}
@@ -88,7 +90,7 @@ export default function TimeSlotPicker({
       {visibleGroups.map((g) => (
         <div key={g.label} style={{ marginBottom: 16 }}>
           <div style={{
-            fontSize: 11, fontWeight: 600, color: "#86868b",
+            fontSize: 11, fontWeight: 600, color: "#5e5e63",
             letterSpacing: "0.08em", textTransform: "uppercase",
             marginBottom: 8,
           }}>

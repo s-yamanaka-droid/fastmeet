@@ -46,14 +46,24 @@ export async function getBusyTimes(
   const calendar = google.calendar({ version: "v3", auth });
 
   // events.list で取得（summary・transparency 込み）
-  const res = await calendar.events.list({
-    calendarId: "primary",
-    timeMin,
-    timeMax,
-    timeZone: "Asia/Tokyo",
-    singleEvents: true,
-    orderBy: "startTime",
-    maxResults: 2500,
+  // タイムアウト4秒：Calendar API が重い時もページ全体を止めない
+  const TIMEOUT_MS = 4000;
+  const res = await Promise.race([
+    calendar.events.list({
+      calendarId: "primary",
+      timeMin,
+      timeMax,
+      timeZone: "Asia/Tokyo",
+      singleEvents: true,
+      orderBy: "startTime",
+      maxResults: 500,
+    }),
+    new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error("Calendar API timeout")), TIMEOUT_MS)
+    ),
+  ]).catch((e) => {
+    console.error("getBusyTimes failed:", e);
+    return { data: { items: [] } };
   });
 
   const items = res.data.items ?? [];

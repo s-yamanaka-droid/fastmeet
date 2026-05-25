@@ -64,7 +64,7 @@ export default async function Home() {
           <h1 style={{ fontSize: 52, fontWeight: 800, lineHeight: 1.2, letterSpacing: "-0.03em", marginBottom: 18, color: "#1d1d1f" }}>
             日程調整の往復を、<br />ゼロに。
           </h1>
-          <p style={{ fontSize: 17, color: "#6e6e73", lineHeight: 1.7, maxWidth: 600, margin: "0 auto 36px" }}>
+          <p style={{ fontSize: 17, color: "#4b5563", lineHeight: 1.7, maxWidth: 600, margin: "0 auto 36px" }}>
             FASTMeet は Googleカレンダーとリアルタイム同期し、空き時間を1つのURLで共有。
             先方が選んだ瞬間に Google Meet / Zoom のURL付きで予約成立。
             商談・面接・社内MTG調整のメール往復から解放されます。
@@ -91,7 +91,7 @@ export default async function Home() {
               <button type="submit" style={{
                 display: "inline-flex", alignItems: "center", gap: 8,
                 padding: "13px 22px",
-                background: "#fff", color: "#86868b",
+                background: "#fff", color: "#5e5e63",
                 border: "1.5px solid #e0e0e5", borderRadius: 12,
                 fontSize: 13, fontWeight: 500, cursor: "pointer",
               }}>
@@ -105,7 +105,7 @@ export default async function Home() {
               </button>
             </form>
           </div>
-          <div style={{ marginTop: 16, fontSize: 12, color: "#86868b" }}>
+          <div style={{ marginTop: 16, fontSize: 12, color: "#5e5e63" }}>
             ゲスト予約は登録不要・即時利用可。ホスト登録は現在 Google本番審査中
           </div>
         </div>
@@ -136,7 +136,7 @@ export default async function Home() {
                   </svg>
                 </div>
                 <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 6 }}>{f.title}</div>
-                <div style={{ fontSize: 13, color: "#6e6e73", lineHeight: 1.6 }}>{f.desc}</div>
+                <div style={{ fontSize: 13, color: "#4b5563", lineHeight: 1.6 }}>{f.desc}</div>
               </div>
             ))}
           </div>
@@ -149,7 +149,7 @@ export default async function Home() {
           <div style={{ textAlign: "center", marginBottom: 36 }}>
             <div style={{ fontSize: 12, color: "#0066CC", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>OAUTH SCOPES</div>
             <h2 style={{ fontSize: 28, fontWeight: 700, letterSpacing: "-0.02em" }}>FASTMeet が必要とする権限</h2>
-            <p style={{ fontSize: 14, color: "#6e6e73", marginTop: 10, lineHeight: 1.7 }}>
+            <p style={{ fontSize: 14, color: "#4b5563", marginTop: 10, lineHeight: 1.7 }}>
               FASTMeet は最小限のGoogleカレンダー権限のみを使用します。<br/>
               データを第三者に販売したり、目的外で利用することは一切ありません。
             </p>
@@ -184,9 +184,43 @@ export default async function Home() {
               </div>
             ))}
           </div>
-          <div style={{ marginTop: 18, fontSize: 12, color: "#6e6e73", textAlign: "center" }}>
+          <div style={{ marginTop: 18, fontSize: 12, color: "#4b5563", textAlign: "center" }}>
             詳細: <Link href="/privacy" style={{ color: "#0066CC", textDecoration: "underline" }}>プライバシーポリシー</Link> /
             <Link href="/terms" style={{ color: "#0066CC", textDecoration: "underline", marginLeft: 8 }}>利用規約</Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 予約後の体験 */}
+      <section id="after-booking" style={{ padding: "60px 24px", background: "#fff" }}>
+        <div style={{ maxWidth: 980, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 40 }}>
+            <div style={{ fontSize: 12, color: "#0066CC", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>AFTER BOOKING</div>
+            <h2 style={{ fontSize: 30, fontWeight: 700, letterSpacing: "-0.02em" }}>予約確定後、自動で起きること</h2>
+            <p style={{ fontSize: 14, color: "#4b5563", marginTop: 10, lineHeight: 1.7 }}>
+              「予約して終わり」ではなく、ホスト・ゲスト両者の手間がゼロになる仕組み。
+            </p>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 14 }}>
+            {[
+              { step: "01", title: "Googleカレンダー自動登録", desc: "ホスト・ゲスト両方のGoogleカレンダーに即時登録。.icsダウンロード不要。" },
+              { step: "02", title: "Google Meet / Zoom 自動発行", desc: "種別ごとに設定したツールのURLを自動生成。手動でMeetリンク作る手間ゼロ。" },
+              { step: "03", title: "招待メール自動送信", desc: "Google経由で確認メール・カレンダー招待が両者に即時配信。" },
+              { step: "04", title: "ワンクリック キャンセル/変更", desc: "予約完了画面に専用URL表示。クリック1回で再調整、両者カレンダーから自動削除。" },
+              { step: "05", title: "1日上限カット保護", desc: "ホスト側のキャパ超過予約を自動ブロック。山中の場合は 1日9件上限。" },
+              { step: "06", title: "5時間前ルール", desc: "「今からすぐ」予約されない。最低5時間の準備時間を確保。" },
+            ].map((f) => (
+              <div key={f.step} style={{ background: "#fafafa", borderRadius: 14, padding: "22px 24px", border: "1px solid #f0f0f5" }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#0066CC", letterSpacing: "0.15em", marginBottom: 10 }}>STEP {f.step}</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "#1d1d1f", marginBottom: 6, letterSpacing: "-0.005em" }}>{f.title}</div>
+                <div style={{ fontSize: 13, color: "#4b5563", lineHeight: 1.7 }}>{f.desc}</div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ marginTop: 28, padding: "16px 20px", background: "#fff8e1", borderRadius: 10, fontSize: 13, color: "#7c5500", textAlign: "center", lineHeight: 1.6 }}>
+            <strong>取引先側</strong>: 登録不要・Googleログイン不要。名前・メールを手入力するだけで予約完了。
           </div>
         </div>
       </section>
@@ -223,9 +257,9 @@ export default async function Home() {
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <span style={{ width: 24, height: 24, borderRadius: 6, background: "linear-gradient(135deg, #0066CC, #00b4d8)" }} />
             <span style={{ fontSize: 13, fontWeight: 600 }}>FASTMeet</span>
-            <span style={{ fontSize: 12, color: "#86868b" }}>© 2026 山中秀斗</span>
+            <span style={{ fontSize: 12, color: "#5e5e63" }}>© 2026 山中秀斗</span>
           </div>
-          <div style={{ display: "flex", gap: 18, fontSize: 12, color: "#6e6e73" }}>
+          <div style={{ display: "flex", gap: 18, fontSize: 12, color: "#4b5563" }}>
             <Link href="/privacy" style={{ color: "inherit", textDecoration: "none" }}>プライバシーポリシー</Link>
             <Link href="/terms" style={{ color: "inherit", textDecoration: "none" }}>利用規約</Link>
             <Link href="/contact" style={{ color: "inherit", textDecoration: "none" }}>お問い合わせ</Link>

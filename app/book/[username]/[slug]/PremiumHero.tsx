@@ -78,12 +78,12 @@ export default function PremiumHero({
               {p.displayName ?? "Premium Host"}
             </div>
             {p.displayNameEn && (
-              <div style={{ fontSize: 12, color: "#86868b", marginTop: 2, letterSpacing: "0.05em" }}>
+              <div style={{ fontSize: 12, color: "#5e5e63", marginTop: 2, letterSpacing: "0.05em" }}>
                 {p.displayNameEn}
               </div>
             )}
             {p.titles && p.titles.length > 0 && (
-              <div style={{ fontSize: 12, color: "#6e6e73", marginTop: 6, lineHeight: 1.6 }}>
+              <div style={{ fontSize: 12, color: "#4b5563", marginTop: 6, lineHeight: 1.6 }}>
                 {p.titles.join("  /  ")}
               </div>
             )}
@@ -105,7 +105,7 @@ export default function PremiumHero({
         {/* SubTagline */}
         {p.subTagline && (
           <div style={{
-            fontSize: 15, color: "#6e6e73",
+            fontSize: 15, color: "#4b5563",
             marginBottom: 32, lineHeight: 1.6,
           }}>
             {p.subTagline}
@@ -123,7 +123,7 @@ export default function PremiumHero({
         {p.philosophy && p.philosophy.length > 0 && (
           <div>
             <div style={{
-              fontSize: 11, color: "#86868b", marginBottom: 12,
+              fontSize: 11, color: "#5e5e63", marginBottom: 12,
               letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 600,
             }}>
               Why I move fast

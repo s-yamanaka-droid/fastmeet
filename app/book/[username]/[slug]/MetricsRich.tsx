@@ -136,7 +136,7 @@ export default function MetricsRich({ metrics }: { metrics: Record<string, unkno
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 18 }}>
         <div style={{
-          fontSize: 11, color: "#86868b", fontWeight: 600,
+          fontSize: 11, color: "#5e5e63", fontWeight: 600,
           letterSpacing: "0.1em", textTransform: "uppercase",
         }}>
           {monthLabel}の稼働実態
@@ -154,7 +154,7 @@ export default function MetricsRich({ metrics }: { metrics: Record<string, unkno
           }} />
           LIVE
           {m.updated_at && (
-            <span style={{ color: "#86868b", fontWeight: 500, marginLeft: 2 }}>
+            <span style={{ color: "#5e5e63", fontWeight: 500, marginLeft: 2 }}>
               {relativeTime(m.updated_at)}
             </span>
           )}
@@ -178,7 +178,7 @@ export default function MetricsRich({ metrics }: { metrics: Record<string, unkno
 
         <div style={{ display: "flex", alignItems: "baseline", gap: 16, flexWrap: "wrap", position: "relative" }}>
           <div>
-            <div style={{ fontSize: 11, color: "#86868b", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 6 }}>
+            <div style={{ fontSize: 11, color: "#5e5e63", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 6 }}>
               総稼働時間
             </div>
             <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
@@ -194,7 +194,7 @@ export default function MetricsRich({ metrics }: { metrics: Record<string, unkno
           </div>
 
           <div style={{ flex: 1, minWidth: 240 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#86868b", marginBottom: 6 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#5e5e63", marginBottom: 6 }}>
               <span>標準勤務 160h との比較</span>
               <span style={{ color: "#0066CC", fontWeight: 700 }}>
                 <CountUp end={totalPct} decimals={0} suffix="%" />
@@ -230,26 +230,26 @@ export default function MetricsRich({ metrics }: { metrics: Record<string, unkno
           borderTop: "3px solid #FF6B35",
           position: "relative",
         }}>
-          <div style={{ fontSize: 10, color: "#86868b", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>
+          <div style={{ fontSize: 10, color: "#5e5e63", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>
             Claude Code
           </div>
           <div style={{ fontSize: 32, fontWeight: 800, color: "#1d1d1f", letterSpacing: "-0.03em", lineHeight: 1, marginBottom: 4 }}>
             <CountUp end={claudePrompts} />
           </div>
-          <div style={{ fontSize: 11, color: "#86868b", fontWeight: 500, marginBottom: 12 }}>
+          <div style={{ fontSize: 11, color: "#5e5e63", fontWeight: 500, marginBottom: 12 }}>
             prompts / month
           </div>
           <div style={{ fontSize: 11, color: "#3a3a3c", lineHeight: 1.7 }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "#86868b" }}>稼働時間</span>
+              <span style={{ color: "#5e5e63" }}>稼働時間</span>
               <span style={{ fontWeight: 600 }}>{claudeH.toFixed(1)}h</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "#86868b" }}>稼働日数</span>
+              <span style={{ color: "#5e5e63" }}>稼働日数</span>
               <span style={{ fontWeight: 600 }}>{claudeDays}日</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "#86868b" }}>日平均</span>
+              <span style={{ color: "#5e5e63" }}>日平均</span>
               <span style={{ fontWeight: 600, color: "#FF6B35" }}>{promptsPerDay.toLocaleString()} p/日</span>
             </div>
           </div>
@@ -261,26 +261,26 @@ export default function MetricsRich({ metrics }: { metrics: Record<string, unkno
           boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
           borderTop: "3px solid #34A853",
         }}>
-          <div style={{ fontSize: 10, color: "#86868b", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>
+          <div style={{ fontSize: 10, color: "#5e5e63", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>
             商談・社外打合せ
           </div>
           <div style={{ fontSize: 32, fontWeight: 800, color: "#1d1d1f", letterSpacing: "-0.03em", lineHeight: 1, marginBottom: 4 }}>
             <CountUp end={meetingCount} suffix="件" />
           </div>
-          <div style={{ fontSize: 11, color: "#86868b", fontWeight: 500, marginBottom: 12 }}>
+          <div style={{ fontSize: 11, color: "#5e5e63", fontWeight: 500, marginBottom: 12 }}>
             外部MTG
           </div>
           <div style={{ fontSize: 11, color: "#3a3a3c", lineHeight: 1.7 }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "#86868b" }}>社内MTG</span>
+              <span style={{ color: "#5e5e63" }}>社内MTG</span>
               <span style={{ fontWeight: 600 }}>{m.internal_count ?? 0}件</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "#86868b" }}>タスク枠</span>
+              <span style={{ color: "#5e5e63" }}>タスク枠</span>
               <span style={{ fontWeight: 600 }}>{m.task_count ?? 0}件</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "#86868b" }}>日平均</span>
+              <span style={{ color: "#5e5e63" }}>日平均</span>
               <span style={{ fontWeight: 600, color: "#34A853" }}>{meetingPerDay} 件/日</span>
             </div>
           </div>
@@ -292,13 +292,13 @@ export default function MetricsRich({ metrics }: { metrics: Record<string, unkno
           boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
           borderTop: "3px solid #9334EA",
         }}>
-          <div style={{ fontSize: 10, color: "#86868b", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>
+          <div style={{ fontSize: 10, color: "#5e5e63", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>
             出張・移動
           </div>
           <div style={{ fontSize: 32, fontWeight: 800, color: "#1d1d1f", letterSpacing: "-0.03em", lineHeight: 1, marginBottom: 4 }}>
             <CountUp end={dests.length} suffix="都市" />
           </div>
-          <div style={{ fontSize: 11, color: "#86868b", fontWeight: 500, marginBottom: 12 }}>
+          <div style={{ fontSize: 11, color: "#5e5e63", fontWeight: 500, marginBottom: 12 }}>
             出張先
           </div>
           {dests.length > 0 ? (
@@ -316,11 +316,11 @@ export default function MetricsRich({ metrics }: { metrics: Record<string, unkno
           ) : null}
           <div style={{ fontSize: 11, color: "#3a3a3c", lineHeight: 1.7 }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "#86868b" }}>移動回数</span>
+              <span style={{ color: "#5e5e63" }}>移動回数</span>
               <span style={{ fontWeight: 600 }}>{travelCount}件</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "#86868b" }}>移動時間</span>
+              <span style={{ color: "#5e5e63" }}>移動時間</span>
               <span style={{ fontWeight: 600 }}>{(m.travel_hours ?? 0).toFixed(1)}h</span>
             </div>
           </div>
@@ -332,26 +332,26 @@ export default function MetricsRich({ metrics }: { metrics: Record<string, unkno
           boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
           borderTop: "3px solid #EF4444",
         }}>
-          <div style={{ fontSize: 10, color: "#86868b", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>
+          <div style={{ fontSize: 10, color: "#5e5e63", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>
             深夜・週末稼働
           </div>
           <div style={{ fontSize: 32, fontWeight: 800, color: "#1d1d1f", letterSpacing: "-0.03em", lineHeight: 1, marginBottom: 4 }}>
             <CountUp end={lateNight} suffix="件" />
           </div>
-          <div style={{ fontSize: 11, color: "#86868b", fontWeight: 500, marginBottom: 12 }}>
+          <div style={{ fontSize: 11, color: "#5e5e63", fontWeight: 500, marginBottom: 12 }}>
             22時以降の予定
           </div>
           <div style={{ fontSize: 11, color: "#3a3a3c", lineHeight: 1.7 }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "#86868b" }}>週末予定</span>
+              <span style={{ color: "#5e5e63" }}>週末予定</span>
               <span style={{ fontWeight: 600 }}>{weekend}件</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "#86868b" }}>推定睡眠</span>
+              <span style={{ color: "#5e5e63" }}>推定睡眠</span>
               <span style={{ fontWeight: 600, color: "#EF4444" }}>{avgSleep.toFixed(1)}h / 日</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "#86868b" }}>深夜頻度</span>
+              <span style={{ color: "#5e5e63" }}>深夜頻度</span>
               <span style={{ fontWeight: 600 }}>{lateNightPerDay} 回/日</span>
             </div>
           </div>
@@ -360,7 +360,7 @@ export default function MetricsRich({ metrics }: { metrics: Record<string, unkno
 
       {/* Footnote */}
       <div style={{
-        fontSize: 11, color: "#86868b", lineHeight: 1.6,
+        fontSize: 11, color: "#5e5e63", lineHeight: 1.6,
         padding: "10px 14px", background: "rgba(0,102,204,0.04)",
         borderRadius: 10, border: "1px solid rgba(0,102,204,0.08)",
         display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12,

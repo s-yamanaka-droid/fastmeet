@@ -17,7 +17,7 @@ export default function ContactPage() {
         <h1 style={{ fontSize: 28, fontWeight: 700, letterSpacing: "-0.02em", marginBottom: 8 }}>
           お問い合わせ
         </h1>
-        <div style={{ fontSize: 13, color: "#86868b", marginBottom: 32 }}>
+        <div style={{ fontSize: 13, color: "#5e5e63", marginBottom: 32 }}>
           サービスに関するご質問・要望・不具合報告など、お気軽にご連絡ください。
         </div>
 
@@ -33,13 +33,13 @@ export default function ContactPage() {
           <h2 style={{ fontSize: 17, fontWeight: 700, marginBottom: 10 }}>連絡先</h2>
           <div style={{ background: "#fafafa", borderRadius: 12, padding: "16px 20px" }}>
             <div style={{ marginBottom: 12 }}>
-              <div style={{ fontSize: 11, color: "#86868b", fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase", marginBottom: 4 }}>メール（サポート）</div>
+              <div style={{ fontSize: 11, color: "#5e5e63", fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase", marginBottom: 4 }}>メール（サポート）</div>
               <a href="mailto:s-yamanaka@tre-pro.co.jp" style={{ color: "#0066CC", textDecoration: "none", fontSize: 15, fontWeight: 600 }}>
                 s-yamanaka@tre-pro.co.jp
               </a>
             </div>
             <div>
-              <div style={{ fontSize: 11, color: "#86868b", fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase", marginBottom: 4 }}>運営会社</div>
+              <div style={{ fontSize: 11, color: "#5e5e63", fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase", marginBottom: 4 }}>運営会社</div>
               <div style={{ fontSize: 14 }}>株式会社トレプロ / 株式会社楽観</div>
             </div>
           </div>
