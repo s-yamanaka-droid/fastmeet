@@ -17,6 +17,7 @@ export type MeetingType = {
   buffer_after_minutes: number;
   advance_notice_hours: number;
   max_days_ahead: number;
+  max_meetings_per_day?: number | null;
   working_hours_start: string;
   working_hours_end: string;
   working_days: number[];

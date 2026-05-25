@@ -70,6 +70,9 @@ export function generateSlots(
   // JST基準で「今日」のY/M/Dを取得
   const startParts = jstParts(fromDate);
 
+  // 1日上限件数（デフォルト無制限）
+  const dailyCap = meetingType.max_meetings_per_day ?? Infinity;
+
   for (let dayOffset = 0; dayOffset < meetingType.max_days_ahead; dayOffset++) {
     // JST基準で日付を進める
     const dayJstMidnight = jstMidnight(
@@ -86,6 +89,14 @@ export function generateSlots(
 
     const workStart = jstTimeOnDay(dayJstMidnight, meetingType.working_hours_start);
     const workEnd = jstTimeOnDay(dayJstMidnight, meetingType.working_hours_end);
+
+    // この日と重なる busy 件数（営業時間内のもののみカウント）
+    const dayBusyCount = busyIntervals.filter((b) =>
+      overlaps(workStart, workEnd, b.start, b.end)
+    ).length;
+
+    // 1日上限に達していれば、この日全スロット潰す
+    if (dayBusyCount >= dailyCap) continue;
 
     let cursor = new Date(workStart);
     while (cursor < workEnd) {
