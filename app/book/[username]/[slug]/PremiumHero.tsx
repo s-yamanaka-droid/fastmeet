@@ -56,61 +56,146 @@ export default function PremiumHero({
 
   return (
     <section style={{
-      background: "linear-gradient(180deg, #f0f6ff 0%, #f5f5f7 100%)",
-      padding: "48px 24px 48px",
+      position: "relative",
+      background: "#ffffff",
+      padding: "64px 24px 56px",
+      overflow: "hidden",
     }}>
-      <div style={{ maxWidth: 800, margin: "0 auto" }}>
+      {/* メッシュグラデ背景（複数のラジアルを重ねて空気感） */}
+      <div aria-hidden style={{
+        position: "absolute", inset: 0, zIndex: 0,
+        background: `
+          radial-gradient(ellipse 60% 50% at 15% 20%, rgba(0,102,204,0.10) 0%, transparent 60%),
+          radial-gradient(ellipse 50% 40% at 85% 0%, rgba(0,180,216,0.10) 0%, transparent 65%),
+          radial-gradient(ellipse 70% 60% at 50% 100%, rgba(155,89,255,0.06) 0%, transparent 70%),
+          linear-gradient(180deg, #fafcff 0%, #ffffff 100%)
+        `,
+        pointerEvents: "none",
+      }} />
+      {/* グリッドノイズ */}
+      <div aria-hidden style={{
+        position: "absolute", inset: 0, zIndex: 0,
+        backgroundImage: `
+          linear-gradient(rgba(0,102,204,0.025) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0,102,204,0.025) 1px, transparent 1px)
+        `,
+        backgroundSize: "40px 40px",
+        maskImage: "radial-gradient(ellipse at center, black 40%, transparent 80%)",
+        WebkitMaskImage: "radial-gradient(ellipse at center, black 40%, transparent 80%)",
+        pointerEvents: "none",
+      }} />
 
-        {/* Name + Titles */}
-        <div style={{ display: "flex", alignItems: "center", gap: 18, marginBottom: 32 }}>
-          <div style={{
-            width: 64, height: 64, borderRadius: 32,
-            background: "linear-gradient(135deg, #0066CC 0%, #00b4d8 100%)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 24, fontWeight: 700, flexShrink: 0,
-            color: "#fff",
-            boxShadow: "0 6px 20px rgba(0,102,204,0.25)",
-          }}>
-            {p.displayName?.slice(0, 1) ?? "Y"}
+      <div style={{ maxWidth: 880, margin: "0 auto", position: "relative", zIndex: 1 }}>
+
+        {/* Name + Avatar + Titles */}
+        <div style={{
+          display: "flex", alignItems: "center", gap: 24, marginBottom: 40,
+          animation: "fm-fade-in 0.7s ease-out",
+        }}>
+          {/* Avatar with glow */}
+          <div style={{ position: "relative", flexShrink: 0 }}>
+            <div aria-hidden style={{
+              position: "absolute", inset: -10, borderRadius: "50%",
+              background: "radial-gradient(circle, rgba(0,102,204,0.35) 0%, transparent 70%)",
+              filter: "blur(20px)",
+              pointerEvents: "none",
+            }} />
+            <div style={{
+              position: "relative",
+              width: 88, height: 88, borderRadius: 44,
+              background: "linear-gradient(135deg, #0066CC 0%, #00b4d8 70%, #6b5bff 100%)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 34, fontWeight: 800, color: "#fff",
+              letterSpacing: "-0.04em",
+              boxShadow: "0 10px 30px -10px rgba(0,102,204,0.5), inset 0 2px 4px rgba(255,255,255,0.3)",
+              border: "3px solid #fff",
+            }}>
+              {p.displayName?.slice(0, 1) ?? "Y"}
+            </div>
           </div>
-          <div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: "#1d1d1f", letterSpacing: "-0.01em" }}>
+
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{
+              fontSize: 30, fontWeight: 800, color: "#0f0f1a",
+              letterSpacing: "-0.025em", lineHeight: 1.15,
+            }}>
               {p.displayName ?? "Premium Host"}
             </div>
             {p.displayNameEn && (
-              <div style={{ fontSize: 12, color: "#5e5e63", marginTop: 2, letterSpacing: "0.05em" }}>
+              <div style={{
+                fontSize: 12, color: "#7c7c87", marginTop: 3,
+                letterSpacing: "0.12em", fontWeight: 500,
+                textTransform: "uppercase",
+              }}>
                 {p.displayNameEn}
               </div>
             )}
             {p.titles && p.titles.length > 0 && (
-              <div style={{ fontSize: 12, color: "#4b5563", marginTop: 6, lineHeight: 1.6 }}>
-                {p.titles.join("  /  ")}
+              <div style={{
+                display: "flex", flexWrap: "wrap", gap: 6,
+                marginTop: 12,
+              }}>
+                {p.titles.map((t, i) => (
+                  <span key={i} style={{
+                    display: "inline-flex", alignItems: "center",
+                    padding: "4px 10px",
+                    background: "rgba(15,15,26,0.04)",
+                    border: "1px solid rgba(15,15,26,0.08)",
+                    borderRadius: 6,
+                    fontSize: 11, fontWeight: 600, color: "#3a3a4c",
+                    letterSpacing: "-0.005em",
+                    backdropFilter: "blur(6px)",
+                  }}>
+                    {t}
+                  </span>
+                ))}
               </div>
             )}
           </div>
         </div>
 
-        {/* Tagline */}
+        {/* Tagline - 超大型グラデテキスト */}
         {p.tagline && (
           <div style={{
-            fontSize: 30, fontWeight: 700, lineHeight: 1.35,
-            letterSpacing: "-0.025em",
-            marginBottom: 10,
-            color: "#1d1d1f",
+            position: "relative",
+            marginBottom: 18,
+            animation: "fm-fade-up 0.9s ease-out 0.1s both",
           }}>
-            {p.tagline}
+            <h1 style={{
+              fontSize: "clamp(36px, 5.5vw, 56px)",
+              fontWeight: 800,
+              lineHeight: 1.15,
+              letterSpacing: "-0.04em",
+              margin: 0,
+              color: "#0f0f1a",
+              background: "linear-gradient(135deg, #0f0f1a 0%, #1d4ed8 60%, #6b5bff 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}>
+              {p.tagline}
+            </h1>
           </div>
         )}
 
-        {/* SubTagline */}
+        {/* SubTagline - 上品なボディ */}
         {p.subTagline && (
           <div style={{
-            fontSize: 15, color: "#4b5563",
-            marginBottom: 32, lineHeight: 1.6,
+            fontSize: 16, color: "#4b5563",
+            marginBottom: 36, lineHeight: 1.75,
+            maxWidth: 620,
+            animation: "fm-fade-up 1s ease-out 0.2s both",
           }}>
             {p.subTagline}
           </div>
         )}
+
+        {/* 装飾ディバイダ */}
+        <div aria-hidden style={{
+          height: 1,
+          background: "linear-gradient(90deg, transparent 0%, rgba(0,102,204,0.2) 30%, rgba(107,91,255,0.2) 70%, transparent 100%)",
+          marginBottom: 32,
+        }} />
 
         {/* Metrics Card */}
         {metrics && (
@@ -142,6 +227,17 @@ export default function PremiumHero({
           </div>
         )}
       </div>
+
+      <style>{`
+        @keyframes fm-fade-in {
+          from { opacity: 0; transform: translateY(-8px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fm-fade-up {
+          from { opacity: 0; transform: translateY(16px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </section>
   );
 }
