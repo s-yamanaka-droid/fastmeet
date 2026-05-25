@@ -15,7 +15,7 @@ const SKIP_TITLE_PATTERNS = [
   /^task[:：]/i,
   /^ブロック[:：]/i,
   /^その他[:：]/i,
-  /^移動[:：]/i,  // 移動はカレンダー上の自己リマインドなので予約可
+  // 「移動：」は予約取れない時間帯なのでbusyとして残す
 ];
 
 function shouldSkipAsBusy(ev: { summary?: string | null; transparency?: string | null }): boolean {
