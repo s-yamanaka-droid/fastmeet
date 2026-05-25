@@ -2,8 +2,8 @@
 import { getBookingData } from "./getBookingData";
 import BookingClient from "./BookingClient";
 
-// 60秒ISR：高速 + 1分以内に新規予約・キャンセルが反映される
-export const revalidate = 60;
+// 30秒ISR：高速 + 30秒以内にリアルタイム反映
+export const revalidate = 30;
 
 export default async function BookingPage({
   params,

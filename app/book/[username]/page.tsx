@@ -3,7 +3,7 @@
 import { getBookingData } from "./[slug]/getBookingData";
 import BookingClient from "./[slug]/BookingClient";
 
-export const revalidate = 60;
+export const revalidate = 30;
 
 export default async function BookingPageDefault({
   params,
