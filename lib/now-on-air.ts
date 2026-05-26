@@ -46,24 +46,22 @@ export async function getTodayNews(): Promise<{ date: string; items: NewsItem[] 
 function parse(html: string, base: string, date: string): { date: string; items: NewsItem[] } {
   const items: NewsItem[] = [];
 
-  // <div class="daily-topic" id="topic-N">...<h2>TITLE</h2>...<img src="...">
-  // シンプルなregexで5件分抽出
-  const blockRegex = /<div[^>]*class="daily-topic"[^>]*id="topic-(\d+)"[\s\S]*?<h2[^>]*>([\s\S]*?)<\/h2>(?:[\s\S]*?<img[^>]*src="([^"]+)")?/g;
+  // id="topic-N" から次の <h2> までを取得（要素種別問わず）
+  const blockRegex = /id="topic-(\d+)"[\s\S]*?<h2[^>]*>([\s\S]*?)<\/h2>/g;
 
   let m;
   while ((m = blockRegex.exec(html)) !== null) {
     const rank = parseInt(m[1], 10);
     const titleRaw = m[2].replace(/<[^>]+>/g, "").trim();
-    const imgPath = m[3];
-    const url = `${base}/news/${date}/#topic-${rank}`;
-    const image = imgPath
-      ? imgPath.startsWith("http") ? imgPath : `${base}/news/${date}/${imgPath.replace(/^\.\.\/\.\.\//, "")}`
-      : undefined;
-    items.push({ rank, title: titleRaw, url, image });
+    if (!titleRaw) continue;
+    items.push({
+      rank,
+      title: titleRaw,
+      url: `${base}/news/${date}/#topic-${rank}`,
+    });
     if (items.length >= 5) break;
   }
 
-  // rankでソート
   items.sort((a, b) => a.rank - b.rank);
   return { date, items };
 }
