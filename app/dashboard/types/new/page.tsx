@@ -25,6 +25,7 @@ export default function NewMeetingType() {
     working_hours_end: "18:00",
     working_days: [1, 2, 3, 4, 5],
     conferencing_type: "google_meet" as "google_meet" | "zoom" | "in_person" | "custom_url" | "none",
+    calendar_prefix: "【外M】",
     custom_url: "",
     location_text: "",
   });
@@ -199,6 +200,52 @@ export default function NewMeetingType() {
               Zoomを使うには事前にダッシュボードの「Zoom連携」設定が必要です。未設定の場合、予約は確定しますが Zoomリンクは生成されません（カレンダー登録のみ）。
             </div>
           )}
+
+          <hr style={{ border: "none", borderTop: "1px solid #e0e0e5", margin: "20px 0" }} />
+
+          <h3 style={{ fontSize: 15, fontWeight: 700, color: "#1d1d1f", marginBottom: 16 }}>カレンダー登録設定</h3>
+
+          <div style={fieldStyle}>
+            <label style={labelStyle}>
+              Calendar イベント・タイトル プレフィックス
+              <span style={{ fontWeight: 400, color: "#5e5e63", fontSize: 11, marginLeft: 8 }}>
+                予約成立時の Google Calendar イベントに自動付与
+              </span>
+            </label>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))", gap: 8 }}>
+              {[
+                { value: "【外M】", label: "【外M】", hint: "外部商談" },
+                { value: "社外：", label: "社外：", hint: "軽め打合せ" },
+                { value: "社内：", label: "社内：", hint: "社内MTG" },
+                { value: "#社内定例：", label: "#社内定例：", hint: "定例" },
+                { value: "タスク：", label: "タスク：", hint: "個人作業" },
+                { value: "その他：", label: "その他：", hint: "その他" },
+              ].map((p) => {
+                const selected = form.calendar_prefix === p.value;
+                return (
+                  <button
+                    key={p.value}
+                    type="button"
+                    onClick={() => setForm((f) => ({ ...f, calendar_prefix: p.value }))}
+                    style={{
+                      padding: "10px 8px", borderRadius: 10,
+                      border: "1.5px solid",
+                      borderColor: selected ? "#0066CC" : "#e0e0e5",
+                      background: selected ? "#e8f0fe" : "#fff",
+                      color: selected ? "#0066CC" : "#3a3a3c",
+                      cursor: "pointer", textAlign: "center",
+                    }}
+                  >
+                    <div style={{ fontSize: 13, fontWeight: 700 }}>{p.label}</div>
+                    <div style={{ fontSize: 11, color: selected ? "#0066CC" : "#5e5e63", marginTop: 2 }}>{p.hint}</div>
+                  </button>
+                );
+              })}
+            </div>
+            <div style={{ marginTop: 8, fontSize: 11, color: "#5e5e63", lineHeight: 1.6 }}>
+              例：「{form.calendar_prefix}{form.calendar_prefix?.startsWith("【") ? "" : ""}山田太郎／株式会社○○ - {form.name || "30分商談ミーティング"}」
+            </div>
+          </div>
 
           <hr style={{ border: "none", borderTop: "1px solid #e0e0e5", margin: "20px 0" }} />
 

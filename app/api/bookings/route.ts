@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
 
   const { data: meetingType } = await supabase
     .from("fastmeet_meeting_types")
-    .select("name, description, duration_minutes, conferencing_type, custom_url, location_text, fastmeet_users(google_refresh_token, email, name, zoom_account_id, zoom_client_id, zoom_client_secret)")
+    .select("name, description, duration_minutes, conferencing_type, custom_url, location_text, calendar_prefix, fastmeet_users(google_refresh_token, email, name, zoom_account_id, zoom_client_id, zoom_client_secret)")
     .eq("id", meetingTypeId)
     .single();
 
@@ -49,6 +49,15 @@ export async function POST(req: NextRequest) {
     const host = (Array.isArray(hostRaw) ? hostRaw[0] : hostRaw) as unknown as HostUser;
     const conferencingType: ConferencingType = (meetingType.conferencing_type as ConferencingType) || "google_meet";
 
+    // カレンダープレフィックスを統一ルール準拠で適用（デフォルト「【外M】」）
+    const prefix = ((meetingType as { calendar_prefix?: string }).calendar_prefix ?? "【外M】").trim();
+    // 「【】」系プレフィックスは間にスペース不要、「：」系はスペースなしで連結
+    const prefixedTitle = prefix.startsWith("【")
+      ? `${prefix}${guestName}${guestCompany ? `／${guestCompany}` : ""} - ${meetingType.name}`
+      : prefix.endsWith("：") || prefix.endsWith(":")
+        ? `${prefix}${guestName}${guestCompany ? `／${guestCompany}` : ""} - ${meetingType.name}`
+        : `${prefix} ${guestName}${guestCompany ? `／${guestCompany}` : ""} - ${meetingType.name}`;
+
     let externalUrl: string | undefined;
 
     if (conferencingType === "zoom") {
@@ -56,7 +65,7 @@ export async function POST(req: NextRequest) {
       if (creds) {
         try {
           const z = await createZoomMeeting(creds, host.email, {
-            topic: `${meetingType.name} - ${guestName}${guestCompany ? ` (${guestCompany})` : ""}`,
+            topic: prefixedTitle,
             startTime,
             durationMinutes: meetingType.duration_minutes,
             agenda: guestNotes ?? undefined,
@@ -75,7 +84,7 @@ export async function POST(req: NextRequest) {
     if (host?.google_refresh_token) {
       try {
         const { eventId, meetUrl } = await createCalendarEvent(host.google_refresh_token, {
-          summary: `${meetingType.name} - ${guestName}${guestCompany ? ` (${guestCompany})` : ""}`,
+          summary: prefixedTitle,
           description: guestNotes ?? undefined,
           startTime,
           endTime,
