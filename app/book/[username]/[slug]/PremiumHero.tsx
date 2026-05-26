@@ -42,12 +42,16 @@ function relativeTime(iso?: string): string {
   return `${diffDay}日前`;
 }
 
+type NewsItem = { rank: number; title: string; url: string; image?: string };
+
 export default function PremiumHero({
   profile,
   metrics,
+  news,
 }: {
   profile: Record<string, unknown>;
   metrics: Record<string, unknown> | null;
+  news?: { date: string; items: NewsItem[] };
 }) {
   const p = profile as Profile;
   const m = (metrics ?? {}) as Metrics;
@@ -154,39 +158,88 @@ export default function PremiumHero({
           </div>
         </div>
 
-        {/* Tagline - 超大型グラデテキスト */}
-        {p.tagline && (
+        {/* AI News カラム — Now on AIr 連携 */}
+        {news && news.items.length > 0 && (
           <div style={{
-            position: "relative",
-            marginBottom: 18,
+            marginBottom: 36,
             animation: "fm-fade-up 0.9s ease-out 0.1s both",
           }}>
-            <h1 style={{
-              fontSize: "clamp(36px, 5.5vw, 56px)",
-              fontWeight: 800,
-              lineHeight: 1.15,
-              letterSpacing: "-0.04em",
-              margin: 0,
-              color: "#0f0f1a",
-              background: "linear-gradient(135deg, #0f0f1a 0%, #1d4ed8 60%, #6b5bff 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
+            <div style={{
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+              marginBottom: 14, flexWrap: "wrap", gap: 8,
             }}>
-              {p.tagline}
-            </h1>
-          </div>
-        )}
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <span style={{
+                  width: 6, height: 6, borderRadius: 3, background: "#FF6B35",
+                  animation: "fm-pulse 1.6s ease-in-out infinite",
+                  display: "inline-block",
+                }} />
+                <span style={{
+                  fontSize: 11, fontWeight: 700, color: "#FF6B35",
+                  letterSpacing: "0.12em", textTransform: "uppercase",
+                }}>
+                  Today's AI News
+                </span>
+                <span style={{ fontSize: 11, color: "#7c7c87", fontWeight: 500 }}>
+                  {news.date}
+                </span>
+              </div>
+              <a href="https://s-yamanaka-droid.github.io/nowonair/"
+                 target="_blank" rel="noopener noreferrer"
+                 style={{
+                   fontSize: 11, color: "#5e5e63", textDecoration: "none",
+                   display: "inline-flex", alignItems: "center", gap: 4, fontWeight: 600,
+                 }}>
+                Now on AIr で全件 →
+              </a>
+            </div>
 
-        {/* SubTagline - 上品なボディ */}
-        {p.subTagline && (
-          <div style={{
-            fontSize: 16, color: "#4b5563",
-            marginBottom: 36, lineHeight: 1.75,
-            maxWidth: 620,
-            animation: "fm-fade-up 1s ease-out 0.2s both",
-          }}>
-            {p.subTagline}
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+              gap: 10,
+            }}>
+              {news.items.map((n) => (
+                <a key={n.rank}
+                   href={n.url}
+                   target="_blank" rel="noopener noreferrer"
+                   style={{
+                     display: "flex", flexDirection: "column",
+                     padding: "14px 16px",
+                     background: "rgba(255,255,255,0.7)",
+                     border: "1px solid rgba(15,15,26,0.08)",
+                     borderRadius: 12,
+                     textDecoration: "none", color: "#1d1d1f",
+                     transition: "transform 0.15s, box-shadow 0.15s, border-color 0.15s",
+                     backdropFilter: "blur(8px)",
+                     gap: 6,
+                   }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{
+                      width: 22, height: 22, borderRadius: 6,
+                      background: "linear-gradient(135deg, #FF6B35 0%, #FF8C00 100%)",
+                      color: "#fff", fontSize: 11, fontWeight: 800,
+                      display: "inline-flex", alignItems: "center", justifyContent: "center",
+                      flexShrink: 0,
+                    }}>
+                      {n.rank}
+                    </span>
+                    <span style={{ fontSize: 10, color: "#7c7c87", fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+                      TOPIC
+                    </span>
+                  </div>
+                  <div style={{
+                    fontSize: 13, fontWeight: 600, color: "#1d1d1f",
+                    lineHeight: 1.55, letterSpacing: "-0.005em",
+                    display: "-webkit-box", WebkitLineClamp: 3,
+                    WebkitBoxOrient: "vertical" as const,
+                    overflow: "hidden",
+                  }}>
+                    {n.title}
+                  </div>
+                </a>
+              ))}
+            </div>
           </div>
         )}
 

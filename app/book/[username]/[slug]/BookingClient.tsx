@@ -22,6 +22,7 @@ type Props = {
     allTypes: MeetingType[];
     meetingType: MeetingType | null;
     slots: TimeSlot[];
+    news?: { date: string; items: Array<{ rank: number; title: string; url: string; image?: string }> };
   };
 };
 
@@ -213,7 +214,7 @@ export default function BookingClient({ username, slug, initialData }: Props) {
   return (
     <div style={{ minHeight: "100vh", background: "#f5f5f7" }}>
       {/* Premium Hero (only for premium users, only during slot selection) */}
-      {premium && step === "slots" && <PremiumHero profile={premium.profile} metrics={premium.metrics} />}
+      {premium && step === "slots" && <PremiumHero profile={premium.profile} metrics={premium.metrics} news={initialData.news} />}
 
       {/* Header */}
       <div style={{ background: "#fff", borderBottom: "1px solid #e0e0e5", padding: "16px 24px" }}>

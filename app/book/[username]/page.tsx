@@ -46,6 +46,7 @@ export default async function BookingPageDefault({
         allTypes: data.allTypes,
         meetingType: data.meetingType,
         slots: data.slots,
+        news: data.news,
       }}
     />
   );

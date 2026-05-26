@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { getBusyTimes } from "@/lib/google-calendar";
 import { generateSlots, TimeSlot } from "@/lib/availability";
+import { getTodayNews, NewsItem } from "@/lib/now-on-air";
 import type { MeetingType, CalUser } from "@/lib/supabase";
 
 type User = CalUser & {
@@ -25,6 +26,7 @@ export type BookingPageData = {
   allTypes: MeetingType[];
   meetingType: MeetingType | null;
   slots: TimeSlot[];
+  news: { date: string; items: NewsItem[] };
 };
 
 export async function getBookingData(username: string, slug?: string): Promise<BookingPageData> {
@@ -41,7 +43,7 @@ export async function getBookingData(username: string, slug?: string): Promise<B
 
   const user = userRes.data as User | null;
   if (!user) {
-    return { user: null, isPremium: false, profile: {}, metrics: null, allTypes: [], meetingType: null, slots: [] };
+    return { user: null, isPremium: false, profile: {}, metrics: null, allTypes: [], meetingType: null, slots: [], news: { date: "", items: [] } };
   }
 
   void typesRes;
@@ -96,6 +98,9 @@ export async function getBookingData(username: string, slug?: string): Promise<B
     ? (metricsRaw[0] ?? null)
     : (metricsRaw ?? null);
 
+  // Now on AIr の今日のニュース取得（失敗時は空配列）
+  const news = await getTodayNews().catch(() => ({ date: "", items: [] }));
+
   return {
     user,
     isPremium: !!user.is_premium,
@@ -104,5 +109,6 @@ export async function getBookingData(username: string, slug?: string): Promise<B
     allTypes,
     meetingType,
     slots,
+    news,
   };
 }
