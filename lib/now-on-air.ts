@@ -27,7 +27,7 @@ export async function getTodayNews(): Promise<{ date: string; items: NewsItem[] 
     const url = `${base}/news/${targetDate}/`;
     try {
       const res = await Promise.race([
-        fetch(url, { next: { revalidate: 1800 } }),
+        fetch(url, { cache: "no-store" }),
         new Promise<never>((_, reject) =>
           setTimeout(() => reject(new Error("timeout")), 3500)
         ),
