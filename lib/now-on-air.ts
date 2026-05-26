@@ -18,32 +18,29 @@ function getJSTDateString(d = new Date()): string {
 }
 
 export async function getTodayNews(): Promise<{ date: string; items: NewsItem[] }> {
-  const today = getJSTDateString();
   const base = "https://s-yamanaka-droid.github.io/nowonair";
-  const url = `${base}/news/${today}/`;
-
-  let html = "";
-  try {
-    const res = await Promise.race([
-      fetch(url, { next: { revalidate: 1800 } }),
-      new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error("News fetch timeout")), 3500)
-      ),
-    ]);
-    if (!res.ok) {
-      // 今日のニュースがなければ昨日にフォールバック
-      const yesterday = getJSTDateString(new Date(Date.now() - 24 * 60 * 60 * 1000));
-      const fallbackRes = await fetch(`${base}/news/${yesterday}/`, { next: { revalidate: 1800 } });
-      if (!fallbackRes.ok) return { date: today, items: [] };
-      html = await fallbackRes.text();
-      return parse(html, base, yesterday);
+  // 今日〜7日前まで順にトライ（土日・更新遅延対応）
+  for (let dayOffset = 0; dayOffset < 7; dayOffset++) {
+    const targetDate = getJSTDateString(
+      new Date(Date.now() - dayOffset * 24 * 60 * 60 * 1000)
+    );
+    const url = `${base}/news/${targetDate}/`;
+    try {
+      const res = await Promise.race([
+        fetch(url, { next: { revalidate: 1800 } }),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error("timeout")), 3500)
+        ),
+      ]);
+      if (!res.ok) continue;
+      const html = await res.text();
+      const parsed = parse(html, base, targetDate);
+      if (parsed.items.length > 0) return parsed;
+    } catch {
+      continue;
     }
-    html = await res.text();
-  } catch {
-    return { date: today, items: [] };
   }
-
-  return parse(html, base, today);
+  return { date: getJSTDateString(), items: [] };
 }
 
 function parse(html: string, base: string, date: string): { date: string; items: NewsItem[] } {
