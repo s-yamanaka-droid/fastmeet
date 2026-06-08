@@ -5,6 +5,10 @@ import BookingClient from "./BookingClient";
 // 30秒ISR：高速 + 30秒以内にリアルタイム反映
 export const revalidate = 30;
 
+export const metadata = {
+  title: { absolute: "FASTMeet" },
+};
+
 export default async function BookingPage({
   params,
 }: {

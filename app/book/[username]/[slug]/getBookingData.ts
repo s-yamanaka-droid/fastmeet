@@ -92,11 +92,16 @@ export async function getBookingData(username: string, slug?: string): Promise<B
     slots = generateSlots(meetingType, [], bookings.filter((b) => b.meeting_type_id === meetingType.id));
   }
 
-  // metrics flatten
+  // metrics: 月別履歴を保持しつつ表示は「最新月」を選ぶ
   const metricsRaw = user.fastmeet_metrics;
-  const metrics = Array.isArray(metricsRaw)
-    ? (metricsRaw[0] ?? null)
-    : (metricsRaw ?? null);
+  const metricsArray: Record<string, unknown>[] = Array.isArray(metricsRaw)
+    ? metricsRaw.filter((m): m is Record<string, unknown> => !!m && typeof m === "object")
+    : metricsRaw
+    ? [metricsRaw as Record<string, unknown>]
+    : [];
+  const metrics = metricsArray.length
+    ? metricsArray.sort((a, b) => String(b.month ?? "").localeCompare(String(a.month ?? "")))[0]
+    : null;
 
   // Now on AIr の今日のニュース取得（失敗時は空配列）
   const news = await getTodayNews().catch(() => ({ date: "", items: [] }));

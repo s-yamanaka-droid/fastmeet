@@ -129,41 +129,80 @@ export function generateSlots(
   return slots;
 }
 
-export function formatSlotForCopy(slots: TimeSlot[]): string {
-  if (slots.length === 0) return "現在ご案内できる日程がありません。";
+export type CopyOptions = {
+  recipient?: string;       // 例: "山田 太郎"
+  recipientCompany?: string; // 例: "株式会社○○"
+  bookingUrl?: string;       // 末尾に併記する FASTMeet予約URL
+  meetingTypeName?: string;  // 例: "30分商談ミーティング"
+  maxDays?: number;          // 表示する候補日数（デフォルト5）
+  slotsPerDay?: number;      // 1日あたり最大候補数（デフォルト3）
+  selfName?: string;         // 自分の署名
+};
 
+export function formatSlotForCopy(slots: TimeSlot[], opts: CopyOptions = {}): string {
+  if (slots.length === 0) {
+    return "申し訳ございません、現在ご案内できる日程がございません。\nお手数ですが、別途ご都合をお知らせください。";
+  }
+
+  const maxDays = opts.maxDays ?? 5;
+  const slotsPerDay = opts.slotsPerDay ?? 3;
+
+  // 日付別グループ化
   const grouped: Record<string, TimeSlot[]> = {};
-  for (const slot of slots.slice(0, 20)) {
+  for (const slot of slots) {
     const date = new Date(slot.start);
     const jstDate = new Intl.DateTimeFormat("ja-JP", {
       timeZone: "Asia/Tokyo",
-      month: "long",
-      day: "numeric",
-      weekday: "short",
+      month: "long", day: "numeric", weekday: "short",
     }).format(date);
     if (!grouped[jstDate]) grouped[jstDate] = [];
     grouped[jstDate].push(slot);
   }
 
-  const lines: string[] = ["以下の日程はいかがでしょうか。\n"];
-  for (const [date, daySlots] of Object.entries(grouped).slice(0, 5)) {
-    lines.push(`【${date}】`);
-    for (const slot of daySlots.slice(0, 3)) {
+  const lines: string[] = [];
+
+  // 宛名
+  if (opts.recipientCompany || opts.recipient) {
+    const company = opts.recipientCompany ? `${opts.recipientCompany}\n` : "";
+    const name = opts.recipient ? `${opts.recipient} 様\n` : "";
+    lines.push(`${company}${name}`);
+  }
+
+  // 冒頭
+  lines.push("お世話になっております。");
+  if (opts.selfName) lines.push(`${opts.selfName}でございます。`);
+  lines.push("");
+  const mtg = opts.meetingTypeName ? `${opts.meetingTypeName}` : "お打ち合わせ";
+  lines.push(`${mtg}の件、以下の候補日にてご都合いかがでしょうか。`);
+  lines.push("");
+
+  // 日程
+  for (const [date, daySlots] of Object.entries(grouped).slice(0, maxDays)) {
+    lines.push(`■ ${date}`);
+    for (const slot of daySlots.slice(0, slotsPerDay)) {
       const startTime = new Intl.DateTimeFormat("ja-JP", {
-        timeZone: "Asia/Tokyo",
-        hour: "2-digit",
-        minute: "2-digit",
+        timeZone: "Asia/Tokyo", hour: "2-digit", minute: "2-digit",
       }).format(new Date(slot.start));
       const endTime = new Intl.DateTimeFormat("ja-JP", {
-        timeZone: "Asia/Tokyo",
-        hour: "2-digit",
-        minute: "2-digit",
+        timeZone: "Asia/Tokyo", hour: "2-digit", minute: "2-digit",
       }).format(new Date(slot.end));
-      lines.push(`・${startTime}〜${endTime}`);
+      lines.push(`  ${startTime}〜${endTime}`);
     }
     lines.push("");
   }
 
-  lines.push("ご都合のよい日時をお知らせください。\nよろしくお願いいたします。");
+  // 結び
+  lines.push("ご都合のよい日時をお知らせください。");
+
+  // 予約URL（オプション）
+  if (opts.bookingUrl) {
+    lines.push("");
+    lines.push("※ お急ぎの場合はこちらから直接ご予約も可能です：");
+    lines.push(opts.bookingUrl);
+  }
+
+  lines.push("");
+  lines.push("何卒よろしくお願いいたします。");
+
   return lines.join("\n");
 }

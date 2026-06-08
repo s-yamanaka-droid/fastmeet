@@ -1,0 +1,48 @@
+{
+  "2026-05-27": {
+    "total": 87,
+    "grade": "A",
+    "categories": {
+      "A_security": 95,
+      "B_function": 85,
+      "C_legal": 79,
+      "D_conversion": 88,
+      "E_seo": 92,
+      "F_ux": 92,
+      "G_performance": 95,
+      "H_code_quality": 74
+    },
+    "lighthouse": {
+      "lp": { "performance": 96, "seo": 100, "accessibility": 90, "best_practices": 100 },
+      "book": { "performance": 97, "seo": 100, "accessibility": 93, "best_practices": 100 }
+    },
+    "cwv": {
+      "lp":   { "fcp": "1.5s", "lcp": "2.2s", "cls": "0", "tbt": "0ms" },
+      "book": { "fcp": "1.0s", "lcp": "1.7s", "cls": "0", "tbt": "0ms" }
+    },
+    "notes": "初回計測。alias紐付け修正 + title fixup を含む"
+  },
+  "2026-05-27_v2": {
+    "total": 89,
+    "grade": "A",
+    "categories": {
+      "A_security": 95,
+      "B_function": 85,
+      "C_legal": 79,
+      "D_conversion": 88,
+      "E_seo": 97,
+      "F_ux": 95,
+      "G_performance": 95,
+      "H_code_quality": 74
+    },
+    "lighthouse": {
+      "book": { "performance": 96, "seo": 100, "accessibility": 95, "best_practices": 100 }
+    },
+    "diff_from_v1": {
+      "E_seo": "+5 (JSON-LD + h1)",
+      "F_ux": "+3 (main landmark + color-contrast)",
+      "total": "+2"
+    },
+    "notes": "TOP3改善実施: main+h1 / color-contrast / JSON-LD"
+  }
+}

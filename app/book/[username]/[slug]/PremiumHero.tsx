@@ -93,26 +93,20 @@ export default function PremiumHero({
 
         {/* Name + Avatar + Titles */}
         <div style={{
-          display: "flex", alignItems: "center", gap: 24, marginBottom: 40,
+          display: "flex", alignItems: "center", gap: 16, marginBottom: 32,
           animation: "fm-fade-in 0.7s ease-out",
         }}>
-          {/* Avatar with glow */}
+          {/* Avatar */}
           <div style={{ position: "relative", flexShrink: 0 }}>
-            <div aria-hidden style={{
-              position: "absolute", inset: -10, borderRadius: "50%",
-              background: "radial-gradient(circle, rgba(0,102,204,0.35) 0%, transparent 70%)",
-              filter: "blur(20px)",
-              pointerEvents: "none",
-            }} />
             <div style={{
               position: "relative",
-              width: 88, height: 88, borderRadius: 44,
+              width: 56, height: 56, borderRadius: 28,
               background: "linear-gradient(135deg, #0066CC 0%, #00b4d8 70%, #6b5bff 100%)",
               display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 34, fontWeight: 800, color: "#fff",
-              letterSpacing: "-0.04em",
-              boxShadow: "0 10px 30px -10px rgba(0,102,204,0.5), inset 0 2px 4px rgba(255,255,255,0.3)",
-              border: "3px solid #fff",
+              fontSize: 22, fontWeight: 700, color: "#fff",
+              letterSpacing: "-0.03em",
+              boxShadow: "0 4px 12px -4px rgba(0,102,204,0.35)",
+              border: "2px solid #fff",
             }}>
               {p.displayName?.slice(0, 1) ?? "Y"}
             </div>
@@ -120,35 +114,34 @@ export default function PremiumHero({
 
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{
-              fontSize: 30, fontWeight: 800, color: "#0f0f1a",
-              letterSpacing: "-0.025em", lineHeight: 1.15,
+              fontSize: 18, fontWeight: 700, color: "#0f0f1a",
+              letterSpacing: "-0.015em", lineHeight: 1.3,
             }}>
               {p.displayName ?? "Premium Host"}
+              {p.displayNameEn && (
+                <span style={{
+                  fontSize: 11, color: "#6b6b70", marginLeft: 8,
+                  letterSpacing: "0.08em", fontWeight: 500,
+                  textTransform: "uppercase",
+                }}>
+                  {p.displayNameEn}
+                </span>
+              )}
             </div>
-            {p.displayNameEn && (
-              <div style={{
-                fontSize: 12, color: "#7c7c87", marginTop: 3,
-                letterSpacing: "0.12em", fontWeight: 500,
-                textTransform: "uppercase",
-              }}>
-                {p.displayNameEn}
-              </div>
-            )}
             {p.titles && p.titles.length > 0 && (
               <div style={{
-                display: "flex", flexWrap: "wrap", gap: 6,
-                marginTop: 12,
+                display: "flex", flexWrap: "wrap", gap: 5,
+                marginTop: 8,
               }}>
                 {p.titles.map((t, i) => (
                   <span key={i} style={{
                     display: "inline-flex", alignItems: "center",
-                    padding: "4px 10px",
+                    padding: "3px 9px",
                     background: "rgba(15,15,26,0.04)",
                     border: "1px solid rgba(15,15,26,0.08)",
                     borderRadius: 6,
-                    fontSize: 11, fontWeight: 600, color: "#3a3a4c",
+                    fontSize: 10.5, fontWeight: 600, color: "#3a3a4c",
                     letterSpacing: "-0.005em",
-                    backdropFilter: "blur(6px)",
                   }}>
                     {t}
                   </span>
@@ -180,7 +173,7 @@ export default function PremiumHero({
                 }}>
                   Today's AI News
                 </span>
-                <span style={{ fontSize: 11, color: "#7c7c87", fontWeight: 500 }}>
+                <span style={{ fontSize: 11, color: "#6b6b70", fontWeight: 500 }}>
                   {news.date}
                 </span>
               </div>
@@ -224,7 +217,7 @@ export default function PremiumHero({
                     }}>
                       {n.rank}
                     </span>
-                    <span style={{ fontSize: 10, color: "#7c7c87", fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+                    <span style={{ fontSize: 10, color: "#6b6b70", fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>
                       TOPIC
                     </span>
                   </div>

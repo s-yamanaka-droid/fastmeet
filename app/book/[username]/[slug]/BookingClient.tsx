@@ -55,6 +55,13 @@ export default function BookingClient({ username, slug, initialData }: Props) {
   const [copied, setCopied] = useState(false);
   const [copyText, setCopyText] = useState("");
   const [showCopyModal, setShowCopyModal] = useState(false);
+  // 候補日テキスト生成オプション
+  const [copyOpts, setCopyOpts] = useState({
+    recipient: "",
+    recipientCompany: "",
+    includeUrl: false,
+    selfName: "",
+  });
   const [form, setForm] = useState({ name: "", email: "", company: "", notes: "" });
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [confirmed, setConfirmed] = useState<{ meetingUrl: string | null; cancelToken: string } | null>(null);
@@ -112,11 +119,42 @@ export default function BookingClient({ username, slug, initialData }: Props) {
     }).format(new Date(iso));
   }
 
+  // ホスト名を premium プロファイルから推定（署名のデフォルト）
+  const defaultSelfName = (premium?.profile?.name as string | undefined) ?? "";
+  // 予約URL（クライアントサイドで完成）
+  function getBookingUrl() {
+    if (typeof window === "undefined") return "";
+    return `${window.location.origin}/book/${username}/${slug}`;
+  }
+
+  function buildCopyText(opts = copyOpts) {
+    return formatSlotForCopy(slots, {
+      recipient: opts.recipient || undefined,
+      recipientCompany: opts.recipientCompany || undefined,
+      meetingTypeName: meetingType?.name,
+      selfName: opts.selfName || defaultSelfName || undefined,
+      bookingUrl: opts.includeUrl ? getBookingUrl() : undefined,
+    });
+  }
+
   function handleCopyText() {
-    const text = formatSlotForCopy(slots);
-    setCopyText(text);
+    const initial = {
+      recipient: copyOpts.recipient,
+      recipientCompany: copyOpts.recipientCompany,
+      includeUrl: copyOpts.includeUrl,
+      selfName: copyOpts.selfName || defaultSelfName,
+    };
+    setCopyOpts(initial);
+    setCopyText(buildCopyText(initial));
     setShowCopyModal(true);
   }
+
+  // モーダルが開いている間、オプション変更で本文をライブ再生成
+  useEffect(() => {
+    if (!showCopyModal) return;
+    setCopyText(buildCopyText(copyOpts));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [copyOpts, showCopyModal, slots, meetingType?.id]);
 
   function doCopy() {
     navigator.clipboard.writeText(copyText);
@@ -174,7 +212,7 @@ export default function BookingClient({ username, slug, initialData }: Props) {
 
   if (step === "done") {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f5f5f7" }}>
+      <main role="main" style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f5f5f7" }}>
         <div style={{ background: "#fff", borderRadius: 20, padding: 48, maxWidth: 480, width: "100%", margin: "0 24px", textAlign: "center", boxShadow: "0 4px 24px rgba(0,0,0,0.08)" }}>
           <div style={{ width: 64, height: 64, borderRadius: 32, background: "#e8f5e9", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px" }}>
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#34A853" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -207,12 +245,22 @@ export default function BookingClient({ username, slug, initialData }: Props) {
             </a>
           )}
         </div>
-      </div>
+      </main>
     );
   }
 
+  const hostName = (premium?.profile?.displayName as string | undefined) ?? username;
+
   return (
-    <div style={{ minHeight: "100vh", background: "#f5f5f7" }}>
+    <main role="main" style={{ minHeight: "100vh", background: "#f5f5f7" }}>
+      {/* SR-only h1 for accessibility & SEO */}
+      <h1 style={{
+        position: "absolute", width: 1, height: 1, padding: 0, margin: -1,
+        overflow: "hidden", clip: "rect(0,0,0,0)", whiteSpace: "nowrap", border: 0,
+      }}>
+        {hostName}との{meetingType.name}を予約 — FASTMeet
+      </h1>
+
       {/* Premium Hero (only for premium users, only during slot selection) */}
       {premium && step === "slots" && <PremiumHero profile={premium.profile} metrics={premium.metrics} news={initialData.news} />}
 
@@ -437,33 +485,108 @@ export default function BookingClient({ username, slug, initialData }: Props) {
       {/* Copy text modal */}
       {showCopyModal && (
         <div style={{
-          position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)",
-          display: "flex", alignItems: "center", justifyContent: "center", zIndex: 50, padding: 24
+          position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)",
+          display: "flex", alignItems: "center", justifyContent: "center", zIndex: 50, padding: 24,
+          overflowY: "auto",
         }} onClick={() => setShowCopyModal(false)}>
-          <div style={{ background: "#fff", borderRadius: 20, padding: 28, maxWidth: 560, width: "100%", boxShadow: "0 8px 32px rgba(0,0,0,0.15)" }} onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-              <h3 style={{ fontSize: 17, fontWeight: 700, margin: 0 }}>候補日テキスト</h3>
-              <button onClick={() => setShowCopyModal(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "#4b5563", fontSize: 20 }}>×</button>
+          <div style={{
+            background: "#fff", borderRadius: 20, padding: 28,
+            maxWidth: 640, width: "100%",
+            boxShadow: "0 12px 40px rgba(0,0,0,0.18)",
+            maxHeight: "calc(100vh - 48px)", overflowY: "auto",
+          }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+              <h3 style={{ fontSize: 18, fontWeight: 700, margin: 0, color: "#1d1d1f" }}>候補日テキストを作成</h3>
+              <button onClick={() => setShowCopyModal(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "#4b5563", fontSize: 22, lineHeight: 1, padding: 4 }}>×</button>
             </div>
+            <p style={{ fontSize: 13, color: "#6b6b70", margin: "0 0 16px" }}>
+              宛名・会社名を入れると、敬語フォーマットで本文に自動反映されます。
+            </p>
+
+            {/* オプション入力 */}
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 10,
+              marginBottom: 12,
+            }}>
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#3a3a3c", marginBottom: 4 }}>宛先会社名（任意）</label>
+                <input
+                  type="text"
+                  placeholder="株式会社〇〇"
+                  value={copyOpts.recipientCompany}
+                  onChange={(e) => setCopyOpts((o) => ({ ...o, recipientCompany: e.target.value }))}
+                  style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: "1px solid #e0e0e5", fontSize: 13, boxSizing: "border-box", color: "#1d1d1f", background: "#fff" }}
+                />
+              </div>
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#3a3a3c", marginBottom: 4 }}>宛先お名前（任意）</label>
+                <input
+                  type="text"
+                  placeholder="山田 太郎"
+                  value={copyOpts.recipient}
+                  onChange={(e) => setCopyOpts((o) => ({ ...o, recipient: e.target.value }))}
+                  style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: "1px solid #e0e0e5", fontSize: 13, boxSizing: "border-box", color: "#1d1d1f", background: "#fff" }}
+                />
+              </div>
+              <div style={{ gridColumn: "1 / -1" }}>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#3a3a3c", marginBottom: 4 }}>差出人（署名）</label>
+                <input
+                  type="text"
+                  placeholder={defaultSelfName || "山中 秀斗"}
+                  value={copyOpts.selfName}
+                  onChange={(e) => setCopyOpts((o) => ({ ...o, selfName: e.target.value }))}
+                  style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: "1px solid #e0e0e5", fontSize: 13, boxSizing: "border-box", color: "#1d1d1f", background: "#fff" }}
+                />
+              </div>
+            </div>
+
+            <label style={{
+              display: "flex", alignItems: "center", gap: 8,
+              padding: "10px 12px", borderRadius: 10,
+              background: "#f5f5f7", marginBottom: 14, cursor: "pointer",
+            }}>
+              <input
+                type="checkbox"
+                checked={copyOpts.includeUrl}
+                onChange={(e) => setCopyOpts((o) => ({ ...o, includeUrl: e.target.checked }))}
+                style={{ margin: 0 }}
+              />
+              <span style={{ fontSize: 13, color: "#3a3a3c", fontWeight: 500 }}>
+                予約URLも末尾に併記する（お急ぎの場合の直接予約用）
+              </span>
+            </label>
+
             <textarea
-              readOnly
               value={copyText}
-              rows={12}
-              style={{ background: "#f5f5f7", borderRadius: 10, border: "none", padding: 14, fontSize: 14, lineHeight: 1.7, color: "#1d1d1f", resize: "none" }}
+              onChange={(e) => setCopyText(e.target.value)}
+              rows={14}
+              style={{
+                width: "100%", boxSizing: "border-box",
+                background: "#fafafc", borderRadius: 10, border: "1px solid #e8e8ed",
+                padding: 14, fontSize: 13.5, lineHeight: 1.75, color: "#1d1d1f",
+                resize: "vertical", fontFamily: "inherit",
+              }}
             />
+            <div style={{ fontSize: 11, color: "#6b6b70", marginTop: 6 }}>
+              本文は直接編集も可能です。
+            </div>
+
             <button
               onClick={doCopy}
               style={{
-                marginTop: 14, width: "100%", padding: 13, borderRadius: 12,
+                marginTop: 16, width: "100%", padding: 13, borderRadius: 12,
                 background: copied ? "#34A853" : "#0066CC",
-                color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer"
+                color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer",
+                transition: "background 0.15s",
               }}
             >
-              {copied ? "コピーしました" : "コピーする"}
+              {copied ? "コピーしました" : "本文をコピーする"}
             </button>
           </div>
         </div>
       )}
-    </div>
+    </main>
   );
 }

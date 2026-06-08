@@ -5,6 +5,10 @@ import BookingClient from "./[slug]/BookingClient";
 
 export const revalidate = 30;
 
+export const metadata = {
+  title: { absolute: "FASTMeet" },
+};
+
 export default async function BookingPageDefault({
   params,
 }: {

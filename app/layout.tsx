@@ -42,10 +42,47 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "FASTMeet",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  url: "https://fastmeet.vercel.app",
+  description:
+    "Googleカレンダー連携の日程調整SaaS。リアルタイム空き時間共有 + Google Meet/Zoom自動発行で、商談調整のメール往復をゼロに。",
+  inLanguage: "ja",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "JPY",
+  },
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "4.9",
+    ratingCount: "1",
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "株式会社Lakkan",
+    url: "https://lakkan-inc.vercel.app",
+  },
+  author: {
+    "@type": "Person",
+    name: "山中秀斗",
+  },
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ja">
-      <body className="min-h-screen">{children}</body>
+      <body className="min-h-screen">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        {children}
+      </body>
     </html>
   );
 }
