@@ -1,4 +1,5 @@
 import { google, calendar_v3 } from "googleapis";
+import { logSafeIntegrationError } from "@/lib/safe-integration-error";
 
 export function getOAuthClient() {
   return new google.auth.OAuth2(
@@ -62,7 +63,7 @@ export async function getBusyTimes(
       setTimeout(() => reject(new Error("Calendar API timeout")), TIMEOUT_MS)
     ),
   ]).catch((e) => {
-    console.error("getBusyTimes failed:", e);
+    logSafeIntegrationError("getBusyTimes", e);
     return { data: { items: [] } };
   });
 

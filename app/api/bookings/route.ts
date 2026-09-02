@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { supabase } from "@/lib/supabase";
 import { createCalendarEvent, deleteCalendarEvent, ConferencingType } from "@/lib/google-calendar";
 import { createZoomMeeting, resolveZoomCreds } from "@/lib/zoom";
+import { logSafeIntegrationError } from "@/lib/safe-integration-error";
 
 type HostUser = {
   google_refresh_token: string;
@@ -74,7 +75,7 @@ export async function POST(req: NextRequest) {
           externalUrl = z.joinUrl;
           meetingUrl = z.joinUrl;
         } catch (e) {
-          console.error("Zoom create failed:", e);
+          logSafeIntegrationError("Zoom create", e);
         }
       }
     } else if (conferencingType === "custom_url") {
@@ -99,7 +100,7 @@ export async function POST(req: NextRequest) {
         googleEventId = eventId;
         if (conferencingType === "google_meet" && meetUrl) meetingUrl = meetUrl;
       } catch (e) {
-        console.error("Calendar event creation failed:", e);
+        logSafeIntegrationError("Calendar event creation", e);
       }
     }
   }
@@ -189,7 +190,7 @@ export async function DELETE(req: NextRequest) {
       try {
         await deleteCalendarEvent(host.google_refresh_token, booking.google_event_id);
       } catch (e) {
-        console.error("Calendar delete failed:", e);
+        logSafeIntegrationError("Calendar delete", e);
       }
     }
   }
