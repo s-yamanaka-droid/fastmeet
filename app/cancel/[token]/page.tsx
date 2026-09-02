@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, use } from "react";
-import { supabase } from "@/lib/supabase";
 
 export default function CancelPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = use(params);
@@ -12,12 +11,9 @@ export default function CancelPage({ params }: { params: Promise<{ token: string
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase
-        .from("fastmeet_bookings")
-        .select("id, guest_name, start_time, end_time, status")
-        .eq("cancel_token", token)
-        .single();
-      setBooking(data);
+      const res = await fetch(`/api/bookings?token=${encodeURIComponent(token)}`);
+      const data = await res.json();
+      setBooking(res.ok ? data.booking : null);
       setLoading(false);
     })();
   }, [token]);

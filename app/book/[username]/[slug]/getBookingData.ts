@@ -11,11 +11,11 @@ type User = CalUser & {
   fastmeet_metrics?: Record<string, unknown> | Record<string, unknown>[] | null;
 };
 
-// Server-side Supabase client (use service-like anon - same key works for our RLS)
+// Server-side only. Public booking data is filtered here; the database itself is private.
 const serverSupabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  { auth: { persistSession: false } }
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  { auth: { persistSession: false, autoRefreshToken: false } }
 );
 
 export type BookingPageData = {
