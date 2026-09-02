@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/auth";
 import { supabase } from "@/lib/supabase";
 import { createCalendarEvent, deleteCalendarEvent, ConferencingType } from "@/lib/google-calendar";
 import { createZoomMeeting, resolveZoomCreds } from "@/lib/zoom";
@@ -128,8 +129,30 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
+  const token = searchParams.get("token");
+  if (token) {
+    const { data, error } = await supabase
+      .from("fastmeet_bookings")
+      .select("id, guest_name, start_time, end_time, status")
+      .eq("cancel_token", token)
+      .single();
+    if (error || !data) return NextResponse.json({ error: "Invalid token" }, { status: 404 });
+    return NextResponse.json({ booking: data });
+  }
+
   const userId = searchParams.get("userId");
   if (!userId) return NextResponse.json({ error: "userId required" }, { status: 400 });
+
+  const session = await auth();
+  if (!session?.user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { data: currentUser } = await supabase
+    .from("fastmeet_users")
+    .select("id")
+    .eq("email", session.user.email)
+    .single();
+  if (!currentUser || currentUser.id !== userId) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
 
   const { data, error } = await supabase
     .from("fastmeet_bookings")
