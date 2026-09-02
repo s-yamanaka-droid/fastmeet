@@ -53,9 +53,8 @@ export function generateSlots(
   fromDate: Date = new Date()
 ): TimeSlot[] {
   const slots: TimeSlot[] = [];
-  const now = new Date();
   const advanceNoticeMs = meetingType.advance_notice_hours * 60 * 60 * 1000;
-  const earliestStart = new Date(now.getTime() + advanceNoticeMs);
+  const earliestStart = new Date(fromDate.getTime() + advanceNoticeMs);
 
   // Google Calendarのbusyすべてを反映（終日イベント含む）。
   // 出張・休暇ブロック等もこれで正しく潰される。

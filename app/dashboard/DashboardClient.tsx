@@ -83,12 +83,12 @@ export default function DashboardClient({ username, initialMeetingTypes, initial
             {username && (
               <span style={{ fontSize: 13, color: '#4b5563' }}>@{username}</span>
             )}
-            <a
+            <Link
               href="/api/auth/signout?callbackUrl=/"
               style={{ padding: '6px 14px', borderRadius: 8, background: '#f0f0f5', color: '#4b5563', textDecoration: 'none', fontSize: 14 }}
             >
               ログアウト
-            </a>
+            </Link>
           </div>
         </div>
       </header>

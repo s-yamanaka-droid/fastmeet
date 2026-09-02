@@ -86,8 +86,7 @@ describe("generateSlots — 5時間前ルール (advance_notice_hours)", () => {
       [],
       FIXED_JST_2026_06_01_0900
     );
-    const now = new Date();
-    const earliest = new Date(now.getTime() + 5 * 60 * 60 * 1000);
+    const earliest = new Date(FIXED_JST_2026_06_01_0900.getTime() + 5 * 60 * 60 * 1000);
     // 全スロットが earliest 以降
     for (const s of slots) {
       expect(new Date(s.start).getTime()).toBeGreaterThan(earliest.getTime());

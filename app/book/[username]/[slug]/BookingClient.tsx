@@ -80,7 +80,10 @@ export default function BookingClient({ username, slug, initialData }: Props) {
     try {
       const data = JSON.parse(decodeURIComponent(match[1]));
       if (data.email) {
-        setForm((f) => ({ ...f, name: data.name || f.name, email: data.email || f.email }));
+        const timer = window.setTimeout(() => {
+          setForm((f) => ({ ...f, name: data.name || f.name, email: data.email || f.email }));
+        }, 0);
+        return () => window.clearTimeout(timer);
       }
     } catch {
       // ignore
@@ -137,6 +140,12 @@ export default function BookingClient({ username, slug, initialData }: Props) {
     });
   }
 
+  function updateCopyOpts(patch: Partial<typeof copyOpts>) {
+    const next = { ...copyOpts, ...patch };
+    setCopyOpts(next);
+    setCopyText(buildCopyText(next));
+  }
+
   function handleCopyText() {
     const initial = {
       recipient: copyOpts.recipient,
@@ -148,13 +157,6 @@ export default function BookingClient({ username, slug, initialData }: Props) {
     setCopyText(buildCopyText(initial));
     setShowCopyModal(true);
   }
-
-  // モーダルが開いている間、オプション変更で本文をライブ再生成
-  useEffect(() => {
-    if (!showCopyModal) return;
-    setCopyText(buildCopyText(copyOpts));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [copyOpts, showCopyModal, slots, meetingType?.id]);
 
   function doCopy() {
     navigator.clipboard.writeText(copyText);
@@ -516,7 +518,7 @@ export default function BookingClient({ username, slug, initialData }: Props) {
                   type="text"
                   placeholder="株式会社〇〇"
                   value={copyOpts.recipientCompany}
-                  onChange={(e) => setCopyOpts((o) => ({ ...o, recipientCompany: e.target.value }))}
+                  onChange={(e) => updateCopyOpts({ recipientCompany: e.target.value })}
                   style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: "1px solid #e0e0e5", fontSize: 13, boxSizing: "border-box", color: "#1d1d1f", background: "#fff" }}
                 />
               </div>
@@ -526,7 +528,7 @@ export default function BookingClient({ username, slug, initialData }: Props) {
                   type="text"
                   placeholder="山田 太郎"
                   value={copyOpts.recipient}
-                  onChange={(e) => setCopyOpts((o) => ({ ...o, recipient: e.target.value }))}
+                  onChange={(e) => updateCopyOpts({ recipient: e.target.value })}
                   style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: "1px solid #e0e0e5", fontSize: 13, boxSizing: "border-box", color: "#1d1d1f", background: "#fff" }}
                 />
               </div>
@@ -536,7 +538,7 @@ export default function BookingClient({ username, slug, initialData }: Props) {
                   type="text"
                   placeholder={defaultSelfName || "山中 秀斗"}
                   value={copyOpts.selfName}
-                  onChange={(e) => setCopyOpts((o) => ({ ...o, selfName: e.target.value }))}
+                  onChange={(e) => updateCopyOpts({ selfName: e.target.value })}
                   style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: "1px solid #e0e0e5", fontSize: 13, boxSizing: "border-box", color: "#1d1d1f", background: "#fff" }}
                 />
               </div>
@@ -550,7 +552,7 @@ export default function BookingClient({ username, slug, initialData }: Props) {
               <input
                 type="checkbox"
                 checked={copyOpts.includeUrl}
-                onChange={(e) => setCopyOpts((o) => ({ ...o, includeUrl: e.target.checked }))}
+                onChange={(e) => updateCopyOpts({ includeUrl: e.target.checked })}
                 style={{ margin: 0 }}
               />
               <span style={{ fontSize: 13, color: "#3a3a3c", fontWeight: 500 }}>

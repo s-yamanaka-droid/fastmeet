@@ -171,7 +171,7 @@ export default function PremiumHero({
                   fontSize: 11, fontWeight: 700, color: "#FF6B35",
                   letterSpacing: "0.12em", textTransform: "uppercase",
                 }}>
-                  Today's AI News
+                  Today&apos;s AI News
                 </span>
                 <span style={{ fontSize: 11, color: "#6b6b70", fontWeight: 500 }}>
                   {news.date}
